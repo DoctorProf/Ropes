@@ -55,6 +55,8 @@ void Node::move()
 {
 	if (this->block) return;
 	this->node.move(Vector2f(0, 1));
+	this->x = this->node.getPosition().x + radius;
+	this->y = this->node.getPosition().y + radius;
 }
 void Node::draw(RenderWindow& window) 
 {

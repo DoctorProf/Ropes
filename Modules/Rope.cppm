@@ -10,17 +10,17 @@ export module Rope;
 export class Rope 
 {
 private:
-	RectangleShape rope;
+	ConvexShape rope;
 public:
 	Rope();
-	Rope(RectangleShape rope);
+	Rope(ConvexShape rope);
 	void draw(RenderWindow& window);
 };
 Rope::Rope() 
 {
 
 }
-Rope::Rope(RectangleShape rope)
+Rope::Rope(ConvexShape rope)
 {
 	this->rope = rope;
 }

@@ -9,13 +9,15 @@ import Rope;
 
 int main()
 {
+	ContextSettings settings;
+	settings.antialiasingLevel = 8;
 	std::vector<Node> nodes;
 	std::vector<Rope> ropes;
 	bool pause = true;
 	bool activeNode = false;
 	bool mode = false;
 	Node selectedNode;
-	RenderWindow window(VideoMode(1920, 1080), "Ropes", Style::Fullscreen);
+	RenderWindow window(VideoMode(1920, 1080), "Ropes", Style::Fullscreen, settings);
 
 	window.setVerticalSyncEnabled(true);
 
@@ -61,14 +63,14 @@ int main()
 					{
 						if (!activeNode && !mode)
 						{
-							nodes[i].setActivate(true);
-							activeNode = true;
+							nodes[i].setActivate(!nodes[i].getActivate());
+							activeNode = !activeNode;
 							selectedNode = nodes[i];
 							break;
 						}
 						else if (!activeNode && mode) 
 						{
-							nodes[i].setBlock(true);
+							nodes[i].setBlock(!nodes[i].getBlock());
 							break;
 						}
 						ropes.push_back(Rope(data::createRope(selectedNode, nodes[i])));
