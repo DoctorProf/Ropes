@@ -13,18 +13,16 @@ private:
 	RectangleShape rope;
 public:
 	Rope();
-	Rope(double x, double y, double width, double height);
+	Rope(RectangleShape rope);
 	void draw(RenderWindow& window);
 };
 Rope::Rope() 
 {
 
 }
-Rope::Rope(double x, double y, double width, double height) 
+Rope::Rope(RectangleShape rope)
 {
-	this->rope.setFillColor(Color::White);
-	this->rope.setPosition(x, y);
-	this->rope.setSize(Vector2f(width, height));
+	this->rope = rope;
 }
 void Rope::draw(RenderWindow& window) 
 {

@@ -19,11 +19,14 @@ public:
 	Node();
 	Node(double x, double y);
 	Vector2f getPosition();
+	double getRadius();
 	void move();
 	void draw(RenderWindow& window);
 	bool clickNode(double x, double y);
 	void setActivate(bool activate);
 	bool getActivate();
+	void setBlock(bool block);
+	bool getBlock();
 };
 Node::Node()
 {
@@ -44,9 +47,14 @@ Vector2f Node::getPosition()
 {
 	return Vector2f(this->x, this->y);
 }
+double Node::getRadius() 
+{
+	return this->radius;
+}
 void Node::move()
 {
-	this->node.move(Vector2f(1, 0));
+	if (this->block) return;
+	this->node.move(Vector2f(0, 1));
 }
 void Node::draw(RenderWindow& window) 
 {
@@ -66,4 +74,12 @@ void Node::setActivate(bool activate)
 bool Node::getActivate() 
 {
 	return this->activate;
+}
+void Node::setBlock(bool block) 
+{
+	this->block = block;
+}
+bool Node::getBlock() 
+{
+	return this->block;
 }

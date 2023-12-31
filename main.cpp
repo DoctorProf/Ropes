@@ -13,11 +13,15 @@ int main()
 	std::vector<Rope> ropes;
 	bool pause = true;
 	bool activeNode = false;
+	bool mode = false;
 	Node selectedNode;
 	RenderWindow window(VideoMode(1920, 1080), "Ropes", Style::Fullscreen);
 
 	window.setVerticalSyncEnabled(true);
 
+	Clock logic;
+	Time accumulate = Time::Zero;
+	Time timePerFrame = seconds(1.0f / 200.0f);
 	while (window.isOpen()) 
 	{
 		Event event;
@@ -26,6 +30,21 @@ int main()
 			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
 			{
 				window.close();
+			}
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Space)
+			{
+				pause = !pause;
+			}
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::E)
+			{
+				mode = !mode;
+			}
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::R)
+			{
+				nodes.clear();
+				ropes.clear();
+				pause = true;
+				activeNode = false;
 			}
 			if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Right) 
 			{
@@ -40,21 +59,31 @@ int main()
 				{
 					if (nodes[i].clickNode(mouseCoor.x, mouseCoor.y))
 					{
-						if (!activeNode)
+						if (!activeNode && !mode)
 						{
 							nodes[i].setActivate(true);
 							activeNode = true;
 							selectedNode = nodes[i];
 							break;
 						}
-						ropes.push_back(Rope(10 ,10, 100, 1000));
+						else if (!activeNode && mode) 
+						{
+							nodes[i].setBlock(true);
+							break;
+						}
+						ropes.push_back(Rope(data::createRope(selectedNode, nodes[i])));
 						activeNode = false;
 						data::resetActivate(nodes);
 					}
 				}
 			}
 		}
-
+		accumulate += logic.restart();
+		while (accumulate >= timePerFrame) 
+		{
+			accumulate -= timePerFrame;
+			if (!pause) data::move(nodes);
+		}
 		window.clear(Color::Black);
 
 		data::drawRopes(ropes, window);
