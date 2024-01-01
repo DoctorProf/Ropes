@@ -27,6 +27,7 @@ public:
 	bool getActivate();
 	void setBlock(bool block);
 	bool getBlock();
+	bool operator==(const Node& other) const;
 };
 Node::Node()
 {
@@ -36,38 +37,38 @@ Node::Node(double x, double y)
 {
 	this->x = x;
 	this->y = y;
-	this->radius = 20;
-	this->node.setRadius(this->radius);
-	this->node.setPosition(Vector2f(x - radius, y - radius));
-	this->node.setPointCount(100);
-	this->block = false;
-	this->activate = false;
+	radius = 20;
+	node.setRadius(radius);
+	node.setPosition(Vector2f(x - radius, y - radius));
+	node.setPointCount(100);
+	block = false;
+	activate = false;
 }
 Vector2f Node::getPosition() 
 {
-	return Vector2f(this->x, this->y);
+	return Vector2f(x, y);
 }
 double Node::getRadius() 
 {
-	return this->radius;
+	return radius;
 }
 void Node::move()
 {
-	if (this->block) return;
-	this->node.move(Vector2f(0, 1));
-	this->x = this->node.getPosition().x + radius;
-	this->y = this->node.getPosition().y + radius;
+	if (block) return;
+	node.move(Vector2f(0, 1));
+	x = node.getPosition().x + radius;
+	y = node.getPosition().y + radius;
 }
 void Node::draw(RenderWindow& window) 
 {
-	this->node.setFillColor(Color::White);
-	if (this->block) this->node.setFillColor(Color::Red);
-	if (this->activate) this->node.setFillColor(Color::Green);
-	window.draw(this->node);
+	node.setFillColor(Color::White);
+	if (block) node.setFillColor(Color::Red);
+	if (activate) node.setFillColor(Color::Green);
+	window.draw(node);
 }
 bool Node::clickNode(double x, double y)
 {
-	return (pow(this->x - x, 2) + pow(this->y - y, 2)) <= pow(this->radius, 2);
+	return (pow(this->x - x, 2) + pow(this->y - y, 2)) <= pow(radius, 2);
 }
 void Node::setActivate(bool activate)
 {
@@ -75,7 +76,7 @@ void Node::setActivate(bool activate)
 }
 bool Node::getActivate() 
 {
-	return this->activate;
+	return activate;
 }
 void Node::setBlock(bool block) 
 {
@@ -83,5 +84,10 @@ void Node::setBlock(bool block)
 }
 bool Node::getBlock() 
 {
-	return this->block;
+	return block;
+}
+bool Node::operator==(const Node& other) const 
+{
+	return (x == other.x) && (y == other.y) && (radius == other.radius) &&
+		(block == other.block) && (activate == other.activate);
 }

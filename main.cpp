@@ -16,7 +16,7 @@ int main()
 	bool pause = true;
 	bool activeNode = false;
 	bool mode = false;
-	Node selectedNode;
+	int selectedI;
 	RenderWindow window(VideoMode(1920, 1080), "Ropes", Style::Fullscreen, settings);
 
 	window.setVerticalSyncEnabled(true);
@@ -31,6 +31,8 @@ int main()
 		{
 			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
 			{
+				ropes.clear();
+				nodes.clear();
 				window.close();
 			}
 			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Space)
@@ -43,8 +45,8 @@ int main()
 			}
 			if (event.type == Event::KeyPressed && event.key.code == Keyboard::R)
 			{
-				nodes.clear();
 				ropes.clear();
+				nodes.clear();
 				pause = true;
 				activeNode = false;
 			}
@@ -65,7 +67,7 @@ int main()
 						{
 							nodes[i].setActivate(!nodes[i].getActivate());
 							activeNode = !activeNode;
-							selectedNode = nodes[i];
+							selectedI = i;
 							break;
 						}
 						else if (!activeNode && mode) 
@@ -73,7 +75,7 @@ int main()
 							nodes[i].setBlock(!nodes[i].getBlock());
 							break;
 						}
-						ropes.push_back(Rope(data::createRope(selectedNode, nodes[i])));
+						ropes.push_back(Rope(&nodes[selectedI], &nodes[i]));
 						activeNode = false;
 						data::resetActivate(nodes);
 					}
