@@ -55,9 +55,6 @@ double Node::getRadius()
 void Node::move()
 {
 	if (block) return;
-	node.move(Vector2f(0, 1));
-	x = node.getPosition().x + radius;
-	y = node.getPosition().y + radius;
 }
 void Node::draw(RenderWindow& window) 
 {
