@@ -26,11 +26,18 @@ namespace data
 			ropes[i].draw(window);
 		}
 	}
-	export void resetActivate(std::vector<Node>& nodes) 
+	export void resetActivateNodes(std::vector<Node>& nodes) 
 	{
 		for (int i = 0; i < nodes.size(); i++)
 		{
 			nodes[i].setActivate(false);
+		}
+	}
+	export void resetActivateRopes(std::vector<Rope>& ropes)
+	{
+		for (int i = 0; i < ropes.size(); i++)
+		{
+			ropes[i].setActivate(false);
 		}
 	}
 	export void move(std::vector<Node>& nodes) 

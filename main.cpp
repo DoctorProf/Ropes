@@ -14,9 +14,10 @@ int main()
 	std::vector<Node> nodes;
 	std::vector<Rope> ropes;
 	bool pause = true;
-	bool activeNode = false;
 	bool mode = false;
-	int selectedI;
+	int selectedNode = -1;
+	int selectedRope = -1;
+	bool selRope = false;
 	RenderWindow window(VideoMode(1920, 1080), "Ropes", Style::Fullscreen, settings);
 
 	window.setVerticalSyncEnabled(true);
@@ -48,12 +49,15 @@ int main()
 				ropes.clear();
 				nodes.clear();
 				pause = true;
-				activeNode = false;
 			}
 			if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Right) 
 			{
 				Vector2f mouseCoor = window.mapPixelToCoords(Mouse::getPosition(window));
 				nodes.push_back(Node(mouseCoor.x, mouseCoor.y));
+			}
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Tab && selRope)
+			{
+				ropes.erase(ropes.begin() + selectedRope);
 			}
 			if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left)
 			{
@@ -63,22 +67,52 @@ int main()
 				{
 					if (nodes[i].clickNode(mouseCoor.x, mouseCoor.y))
 					{
-						if (!activeNode && !mode)
-						{
-							nodes[i].setActivate(!nodes[i].getActivate());
-							activeNode = !activeNode;
-							selectedI = i;
-							break;
-						}
-						else if (!activeNode && mode) 
+						if (mode)
 						{
 							nodes[i].setBlock(!nodes[i].getBlock());
 							break;
 						}
-						ropes.push_back(Rope(&nodes[selectedI], &nodes[i]));
-						activeNode = false;
-						data::resetActivate(nodes);
+						if (selectedNode == -1)
+						{
+							nodes[i].setActivate(!nodes[i].getActivate());
+							selectedNode = i;
+							break;
+						}
+						if (nodes[selectedNode] == nodes[i])
+						{
+							data::resetActivateNodes(nodes);
+							selectedNode = -1;
+							break;
+						}
+						ropes.push_back(Rope(&nodes[selectedNode], &nodes[i]));
+						selectedNode = -1;
+						data::resetActivateNodes(nodes);
 					}
+				}
+			}
+			else if (event.type == Event::MouseMoved)
+			{
+				Vector2f mouseCoor = window.mapPixelToCoords(Mouse::getPosition(window));
+				bool mouseOnAnyRopes = false;
+				for (int i = 0; i < ropes.size(); i++)
+				{
+					if (ropes[i].clickRope(mouseCoor))
+					{
+						ropes[i].setActivate(true);
+						mouseOnAnyRopes = true;
+						selectedRope = i;
+						selRope = true;
+					}
+					else
+					{
+						ropes[i].setActivate(false);
+					}
+				}
+				if (!mouseOnAnyRopes) 
+				{
+					data::resetActivateRopes(ropes);
+					selectedRope = -1;
+					selRope = false;
 				}
 			}
 		}

@@ -14,11 +14,15 @@ private:
 	ConvexShape rope;
 	Node* startNode;
 	Node* endNode;
+	bool activate;
 public:
 	Rope();
 	Rope(Node* startNode, Node* endNode);
 	ConvexShape updatePosition();
 	void draw(RenderWindow& window);
+	void setActivate(bool activate);
+	bool getActivate();
+	bool clickRope(Vector2f mousePos);
 };
 Rope::Rope() 
 {
@@ -38,8 +42,8 @@ ConvexShape Rope::updatePosition()
 	double angleDegrees = std::atan2(diff.y, diff.x) * 180 / 3.141592;
 
 	rope.setPointCount(4);
-	rope.setFillColor(Color::White);
-	if (abs(angleDegrees) > 80 && abs(angleDegrees) < 100)
+
+	if (abs(angleDegrees) > 60 && abs(angleDegrees) < 120)
 	{
 		rope.setPoint(0, Vector2f(startNode->getPosition().x - radius / 2, startNode->getPosition().y));
 		rope.setPoint(1, Vector2f(startNode->getPosition().x + radius / 2, startNode->getPosition().y));
@@ -57,6 +61,23 @@ ConvexShape Rope::updatePosition()
 }
 void Rope::draw(RenderWindow& window) 
 {
-	this->rope = updatePosition();
-	window.draw(this->rope);
+	rope.setFillColor(Color::White);
+	rope = updatePosition();
+	if (activate) rope.setFillColor(Color::Blue);
+	window.draw(rope);
+}
+void Rope::setActivate(bool activate)
+{
+	this->activate = activate;
+}
+bool Rope::getActivate()
+{
+	return activate;
+}
+bool Rope::clickRope(Vector2f mousePos) 
+{
+	Transform transform = rope.getTransform().getInverse();
+	Vector2f localClick = transform.transformPoint(mousePos);
+
+	return rope.getGlobalBounds().contains(localClick);
 }
