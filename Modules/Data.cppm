@@ -40,11 +40,31 @@ namespace data
 			ropes[i].setActivate(false);
 		}
 	}
-	export void move(std::vector<Node>& nodes) 
+	export void move(std::vector<Node>& nodes, std::vector<Rope>& ropes, Clock& deltaTime, double& gravity)
 	{
+		std::vector<Node> currentNode;
 		for (int i = 0; i < nodes.size(); i++) 
 		{
-			nodes[i].move();
+			for (int j = 0; j < ropes.size(); j++) 
+			{
+				if (ropes[j].getStartNode() == nodes[i] ||
+					ropes[j].getEndNode() == nodes[i]) 
+				{
+					nodes[i] == ropes[j].getStartNode() ? currentNode.push_back(ropes[j].getEndNode()) : currentNode.push_back(ropes[j].getStartNode());
+				}
+			}
+
+			for (int j = 0; j < currentNode.size(); j++) 
+			{
+				Vector2f force = currentNode[j].getPosition() - nodes[i].getPosition();
+				float mass = 10000;
+				Vector2f acceleration = force / mass;
+				Vector2f deltaVelocity = acceleration * deltaTime.getElapsedTime().asSeconds();
+
+				nodes[i].updateSpeed(deltaVelocity);
+			}
+			nodes[i].move(deltaTime, gravity);
+			currentNode.clear();
 		}
 	}
 	export double distance(Vector2f vec1, Vector2f vec2)

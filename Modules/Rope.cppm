@@ -23,6 +23,8 @@ public:
 	void setActivate(bool activate);
 	bool getActivate();
 	bool clickRope(Vector2f mousePos);
+	Node getStartNode();
+	Node getEndNode();
 };
 Rope::Rope() 
 {
@@ -80,4 +82,12 @@ bool Rope::clickRope(Vector2f mousePos)
 	Vector2f localClick = transform.transformPoint(mousePos);
 
 	return rope.getGlobalBounds().contains(localClick);
+}
+Node Rope::getStartNode() 
+{
+	return *startNode;
+}
+Node Rope::getEndNode() 
+{
+	return *endNode;
 }

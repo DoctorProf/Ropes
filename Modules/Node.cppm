@@ -15,18 +15,20 @@ private:
 	double radius;
 	bool block;
 	bool activate;
+	Vector2f speed;
 public:
 	Node();
 	Node(double x, double y);
 	Vector2f getPosition();
 	double getRadius();
-	void move();
+	void move(Clock& deltaTime, double& gravity);
 	void draw(RenderWindow& window);
 	bool clickNode(double x, double y);
 	void setActivate(bool activate);
 	bool getActivate();
 	void setBlock(bool block);
 	bool getBlock();
+	void updateSpeed(Vector2f speed);
 	bool operator==(const Node& other) const;
 };
 Node::Node()
@@ -52,9 +54,13 @@ double Node::getRadius()
 {
 	return radius;
 }
-void Node::move()
+void Node::move(Clock& deltaTime, double& gravity)
 {
 	if (block) return;
+	speed.y += gravity * deltaTime.getElapsedTime().asSeconds();
+	node.setPosition(node.getPosition() + speed);
+	x = node.getPosition().x + radius;
+	y = node.getPosition().y + radius;
 }
 void Node::draw(RenderWindow& window) 
 {
@@ -87,4 +93,8 @@ bool Node::operator==(const Node& other) const
 {
 	return (x == other.x) && (y == other.y) && (radius == other.radius) &&
 		(block == other.block) && (activate == other.activate);
+}
+void Node::updateSpeed(Vector2f speed)
+{
+	this->speed += speed;
 }

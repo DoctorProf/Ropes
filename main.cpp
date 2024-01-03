@@ -18,13 +18,15 @@ int main()
 	int selectedNode = -1;
 	int selectedRope = -1;
 	bool selRope = false;
+	double gravity = 0;
 	RenderWindow window(VideoMode(1920, 1080), "Ropes", Style::Fullscreen, settings);
 
 	window.setVerticalSyncEnabled(true);
 
+	Clock deltaTime;
 	Clock logic;
 	Time accumulate = Time::Zero;
-	Time timePerFrame = seconds(1.0f / 200.0f);
+	Time timePerFrame = seconds(1.0f / 60.0f);
 	while (window.isOpen()) 
 	{
 		Event event;
@@ -39,6 +41,7 @@ int main()
 			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Space)
 			{
 				pause = !pause;
+				deltaTime.restart();
 			}
 			if (event.type == Event::KeyPressed && event.key.code == Keyboard::E)
 			{
@@ -120,7 +123,7 @@ int main()
 		while (accumulate >= timePerFrame) 
 		{
 			accumulate -= timePerFrame;
-			if (!pause) data::move(nodes);
+			if (!pause) data::move(nodes, ropes, deltaTime, gravity);
 		}
 		window.clear(Color::Black);
 
