@@ -21,7 +21,10 @@
     <ClCompile Include="Modules\Node.cppm">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Modules\Data.cppm">
+    <ClCompile Include="Modules\Logic.cppm">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Modules\Simulation.cppm">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="Modules\Rope.cppm">

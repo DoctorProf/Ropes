@@ -2,99 +2,94 @@ module;
 
 #include <iostream>
 #include "SFML/Graphics.hpp"
+
+import Logic;
 using namespace sf;
 
 export module Node;
 
-export class Node 
+export class Node
 {
+public:
+	static struct Neighbor
+	{
+	private:
+		Node* node;
+		double distanceTo;
+	public:
+		Neighbor(Node* node, double distanceTo)
+		{
+			this->node = node;
+			this->distanceTo = distanceTo;
+		}
+
+		Node* getNode()
+		{
+			return node;
+		}
+		double getDistanceTo()
+		{
+			return distanceTo;
+		}
+	};
+
+	Node() = default;
+
+	Node(double x, double y)
+	{
+		radius = 10;
+		mass = 1.0f;
+		position = Vector2f(x - radius, y - radius);
+		node.setRadius(radius);
+		node.setPosition(position);
+		node.setPointCount(50);
+		isStatic = false;
+		activate = false;
+	}
+
+	Vector2f getPosition()
+	{
+		Vector2f centerPos = node.getPosition() + Vector2f(radius, radius);
+		return Vector2f(centerPos.x, centerPos.y);
+	}
+
+	void draw(RenderWindow& window)
+	{
+		node.setFillColor(Color::White);
+		if (isStatic) node.setFillColor(Color::Red);
+		if (activate) node.setFillColor(Color::Green);
+		node.setPosition(position);
+		window.draw(node);
+	}
+
+	bool clickNode(double x, double y)
+	{
+		Vector2f centerPos = node.getPosition() + Vector2f(radius, radius);
+		return (pow(centerPos.x - x, 2) + pow(centerPos.y - y, 2)) <= pow(radius, 2);
+	}
+
+	bool operator==(const Node& other) const
+	{
+		return (radius == other.radius) && (isStatic == other.isStatic) && (activate == other.activate);
+	}
+
+	void move(Vector2f vec)
+	{
+		if (!isStatic) return;
+		position += vec;
+	}
+
+	float radius;
+	float mass;
+
+	Vector2f position;
+	Vector2f velocity;
+	Vector2f forces;
+
+	bool isStatic;
+	bool activate;
+
 private:
 	CircleShape node;
-	double x;
-	double y;
-	double radius;
-	bool block;
-	bool activate;
-	Vector2f speed;
-public:
-	Node();
-	Node(double x, double y);
-	Vector2f getPosition();
-	double getRadius();
-	void move(Clock& deltaTime, double& gravity);
-	void draw(RenderWindow& window);
-	bool clickNode(double x, double y);
-	void setActivate(bool activate);
-	bool getActivate();
-	void setBlock(bool block);
-	bool getBlock();
-	void updateSpeed(Vector2f speed);
-	bool operator==(const Node& other) const;
-};
-Node::Node()
-{
 
-}
-Node::Node(double x, double y)
-{
-	this->x = x;
-	this->y = y;
-	radius = 20;
-	node.setRadius(radius);
-	node.setPosition(Vector2f(x - radius, y - radius));
-	node.setPointCount(100);
-	block = false;
-	activate = false;
-}
-Vector2f Node::getPosition() 
-{
-	return Vector2f(x, y);
-}
-double Node::getRadius() 
-{
-	return radius;
-}
-void Node::move(Clock& deltaTime, double& gravity)
-{
-	if (block) return;
-	speed.y += gravity * deltaTime.getElapsedTime().asSeconds();
-	node.setPosition(node.getPosition() + speed);
-	x = node.getPosition().x + radius;
-	y = node.getPosition().y + radius;
-}
-void Node::draw(RenderWindow& window) 
-{
-	node.setFillColor(Color::White);
-	if (block) node.setFillColor(Color::Red);
-	if (activate) node.setFillColor(Color::Green);
-	window.draw(node);
-}
-bool Node::clickNode(double x, double y)
-{
-	return (pow(this->x - x, 2) + pow(this->y - y, 2)) <= pow(radius, 2);
-}
-void Node::setActivate(bool activate)
-{
-	this->activate = activate;
-}
-bool Node::getActivate() 
-{
-	return activate;
-}
-void Node::setBlock(bool block) 
-{
-	this->block = block;
-}
-bool Node::getBlock() 
-{
-	return block;
-}
-bool Node::operator==(const Node& other) const 
-{
-	return (x == other.x) && (y == other.y) && (radius == other.radius) &&
-		(block == other.block) && (activate == other.activate);
-}
-void Node::updateSpeed(Vector2f speed)
-{
-	this->speed += speed;
-}
+};

@@ -131,10 +131,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Modules\Data.cppm" />
+    <ClCompile Include="Modules\Logic.cppm" />
     <ClCompile Include="Modules\Node.cppm" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Modules\Rope.cppm" />
+    <ClCompile Include="Modules\Simulation.cppm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
