@@ -39,18 +39,17 @@ public:
 	{
 		radius = 10;
 		mass = 1.0f;
-		position = Vector2f(x - radius, y - radius);
+		position = Vector2<double>(x - radius, y - radius);
 		node.setRadius(radius);
-		node.setPosition(position);
+		node.setPosition(Vector2f(position));
 		node.setPointCount(50);
 		isStatic = false;
 		activate = false;
 	}
 
-	Vector2f getPosition()
+	Vector2<double> getPosition()
 	{
-		Vector2f centerPos = node.getPosition() + Vector2f(radius, radius);
-		return Vector2f(centerPos.x, centerPos.y);
+		return position + Vector2<double>(radius, radius);
 	}
 
 	void draw(RenderWindow& window)
@@ -58,13 +57,13 @@ public:
 		node.setFillColor(Color::White);
 		if (isStatic) node.setFillColor(Color::Red);
 		if (activate) node.setFillColor(Color::Green);
-		node.setPosition(position);
+		node.setPosition(Vector2f(position));
 		window.draw(node);
 	}
 
 	bool clickNode(double x, double y)
 	{
-		Vector2f centerPos = node.getPosition() + Vector2f(radius, radius);
+		Vector2<double> centerPos = getPosition();
 		return (pow(centerPos.x - x, 2) + pow(centerPos.y - y, 2)) <= pow(radius, 2);
 	}
 
@@ -73,23 +72,16 @@ public:
 		return (radius == other.radius) && (isStatic == other.isStatic) && (activate == other.activate);
 	}
 
-	void move(Vector2f vec)
-	{
-		if (!isStatic) return;
-		position += vec;
-	}
-
 	float radius;
 	float mass;
 
-	Vector2f position;
-	Vector2f velocity;
-	Vector2f forces;
+	Vector2<double> position;
+	Vector2<double> velocity;
+	Vector2<double> forces;
 
 	bool isStatic;
 	bool activate;
 
 private:
 	CircleShape node;
-
 };

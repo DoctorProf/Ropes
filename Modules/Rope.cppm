@@ -14,9 +14,9 @@ export class Rope
 public:
 	Node* startNode;
 	Node* endNode;
-	float distance;
+	double distance;
 
-	Rope(Node* startNode, Node* endNode, float distance) 
+	Rope(Node* startNode, Node* endNode, double distance) 
 	{
 		this->startNode = startNode;
 		this->endNode = endNode;
@@ -33,8 +33,8 @@ public:
 		startPoint.color = Color::White;
 		endPoint.color = Color::White;
 
-		startPoint.position = startNode->getPosition();
-		endPoint.position = endNode->getPosition();
+		startPoint.position = Vector2f(startNode->getPosition());
+		endPoint.position = Vector2f(endNode->getPosition());
 
 		line.append(startPoint);
 		line.append(endPoint);

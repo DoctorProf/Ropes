@@ -36,7 +36,7 @@ int main()
 	int selectedNode = -1;
 	int selectedRope = -1;
 	int numberNode = 0;
-	int countNodes = 10;
+	int countNodes = 100;
 	double gravity = 9.81;
 
 	RenderWindow window(VideoMode(1920, 1080), "Ropes", Style::Fullscreen, settings);
@@ -69,6 +69,7 @@ int main()
 				pause = true;
 				numberNode = 0;
 				nodes.resize(countNodes);
+				window.clear(Color::Black);
 			}
 			if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Right)
 			{

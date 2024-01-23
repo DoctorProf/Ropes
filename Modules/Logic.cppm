@@ -10,11 +10,11 @@ export module Logic;
 
 export namespace logic 
 {
-	export double dot(Vector2f firstVec, Vector2f seconfVec)
+	export double dot(Vector2<double> firstVec, Vector2<double> seconfVec)
 	{
 		return firstVec.x * seconfVec.x + firstVec.y * seconfVec.y;
 	}
-	export double distance(Vector2f vec1, Vector2f vec2)
+	export double distance(Vector2<double> vec1, Vector2<double> vec2)
 	{
 		double dx = vec1.x - vec2.x;
 		double dy = vec1.y - vec2.y;
