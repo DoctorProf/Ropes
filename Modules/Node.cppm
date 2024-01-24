@@ -71,11 +71,30 @@ public:
 	{
 		return (radius == other.radius) && (isStatic == other.isStatic) && (activate == other.activate);
 	}
+	void update(double dt)
+	{
+		if (isStatic) return;
+		position_old = position;
+		velocity += forces * dt;
+		position += velocity * dt;
+	}
 
+	void updateDerivatives(double dt)
+	{
+		velocity = (position - position_old) / dt;
+		forces = {};
+	}
+
+	void move(Vector2<double> vec)
+	{
+		if (isStatic) return;
+		position += vec;
+	}
 	float radius;
 	float mass;
 
 	Vector2<double> position;
+	Vector2<double> position_old;
 	Vector2<double> velocity;
 	Vector2<double> forces;
 

@@ -22,9 +22,7 @@ int main()
 
 	Clock logic;
 	Time accumulate = Time::Zero;
-	Time deltaTime = seconds(1.0f / 60.0f);
-
-	Simulation simulate;
+	Time deltaTime = seconds(1.0f / 60.0f);	
 
 	std::vector<Node> nodes;
 	std::vector<Rope> ropes;
@@ -40,6 +38,8 @@ int main()
 	double gravity = 9.81;
 
 	RenderWindow window(VideoMode(1920, 1080), "Ropes", Style::Fullscreen, settings);
+
+	Simulation simulate(nodes, ropes, deltaTime.asSeconds(), gravity);
 
 	nodes.resize(countNodes);
 
@@ -117,7 +117,7 @@ int main()
 			accumulate -= deltaTime;
 			if (!pause)
 			{
-				simulate.update(nodes, ropes, deltaTime.asSeconds(), gravity);
+				simulate.update();
 			}
 			window.clear(Color::Black);
 

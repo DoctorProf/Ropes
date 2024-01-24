@@ -15,26 +15,49 @@ export class Simulation
 {
 public:
 
-    Simulation()
-    {
-
+    std::vector<Node>& nodes;
+    std::vector<Rope>& ropes;
+    double deltaTime;
+    double gravity;
+    Simulation(std::vector<Node>& nodes, std::vector<Rope>& ropes, double deltaTime, double gravity)
+        : nodes(nodes), ropes(ropes), deltaTime(deltaTime), gravity(gravity) {
     }
-    void update(std::vector<Node>& nodes, std::vector<Rope>& ropes, double deltaTime, double gravity)
+    void update()
     {
-        applyGravity(nodes, deltaTime, gravity);
-        satisfyConstraints(ropes);
+        applyGravity();
+        applyAirFriction();
+        updatePositions();
+        satisfyConstraints();
+        updateDerivatives();
     }
-    void applyGravity(std::vector<Node>& nodes, double deltaTime, double gravity) {
+    void applyGravity() {
+        Vector2<double> gravity(0.0f, 1500.0f);
         for (Node& node : nodes) {
-            if (!node.isStatic) 
-            {
-                node.velocity.y += gravity * deltaTime;
-
-                node.position += node.velocity;
-            }
+            node.forces += gravity;
         }
     }
-    void satisfyConstraints(std::vector<Rope>& ropes)
+    void applyAirFriction()
+    {
+        double friction_coef = 0.5f;
+        for (Node& node : nodes) {
+            node.forces -= node.velocity * friction_coef;
+        }
+    }
+
+    void updatePositions()
+    {
+        for (Node& node : nodes) {
+            node.update(deltaTime);
+        }
+    }
+
+    void updateDerivatives()
+    {
+        for (Node& node : nodes) {
+            node.updateDerivatives(deltaTime);
+        }
+    }
+    void satisfyConstraints()
     {
         for (Rope& rope : ropes)
         {
@@ -47,8 +70,8 @@ public:
                 Vector2<double> normalizeVector = direction / distance;
                 double c = distance - rope.distance;
                 Vector2<double> p = -c * normalizeVector;
-                if (!startNode->isStatic) startNode->position += p; 
-                if (!endNode->isStatic) endNode->position -= p;
+                if (!startNode->isStatic) startNode->move(p); 
+                if (!endNode->isStatic) endNode->move(-p);
             }
         }
     }
