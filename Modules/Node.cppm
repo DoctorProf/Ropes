@@ -37,7 +37,7 @@ public:
 
 	Node(double x, double y)
 	{
-		radius = 10;
+		radius = 15;
 		mass = 1.0f;
 		position = Vector2<double>(x - radius, y - radius);
 		node.setRadius(radius);

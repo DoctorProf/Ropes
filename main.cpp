@@ -15,6 +15,13 @@ void resetActivateNodes(std::vector<Node>& nodes)
 		nodes[i].activate = false;
 	}
 }
+void resetActivateRopes(std::vector<Rope>& ropes)
+{
+	for (int i = 0; i < ropes.size(); i++)
+	{
+		ropes[i].activate = false;
+	}
+}
 int main()
 {
 	ContextSettings settings;
@@ -35,11 +42,10 @@ int main()
 	int selectedRope = -1;
 	int numberNode = 0;
 	int countNodes = 100;
-	double gravity = 9.81;
 
 	RenderWindow window(VideoMode(1920, 1080), "Ropes", Style::Fullscreen, settings);
 
-	Simulation simulate(nodes, ropes, deltaTime.asSeconds(), gravity);
+	Simulation simulate(nodes, ropes, deltaTime.asSeconds());
 
 	nodes.resize(countNodes);
 
@@ -48,6 +54,24 @@ int main()
 		Event event;
 		while (window.pollEvent(event))
 		{
+			if (event.type == Event::MouseMoved)
+			{
+				Vector2i mouseCoor = Mouse::getPosition(window);
+				bool mouseOnAnyRope = false;
+				for (int i = 0; i < ropes.size(); i++)
+				{
+					if (ropes[i].clickRope(Vector2f(mouseCoor.x, mouseCoor.y)))
+					{
+						ropes[i].activate = true;
+						mouseOnAnyRope = true;
+					}
+					else
+					{
+						ropes[i].activate = false;
+					}
+				}
+				if (!mouseOnAnyRope) resetActivateRopes(ropes);
+			}
 			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
 			{
 				nodes.clear();
@@ -70,6 +94,16 @@ int main()
 				numberNode = 0;
 				nodes.resize(countNodes);
 				window.clear(Color::Black);
+			}
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Tab)
+			{
+				for (int i = 0; i < ropes.size(); i++) 
+				{
+					if (ropes[i].activate)
+					{
+						ropes.erase(ropes.begin() + i);
+					}
+				}
 			}
 			if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Right)
 			{

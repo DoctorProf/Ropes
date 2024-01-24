@@ -18,9 +18,9 @@ public:
     std::vector<Node>& nodes;
     std::vector<Rope>& ropes;
     double deltaTime;
-    double gravity;
-    Simulation(std::vector<Node>& nodes, std::vector<Rope>& ropes, double deltaTime, double gravity)
-        : nodes(nodes), ropes(ropes), deltaTime(deltaTime), gravity(gravity) {
+    Vector2<double> gravity;
+    Simulation(std::vector<Node>& nodes, std::vector<Rope>& ropes, double deltaTime)
+        : nodes(nodes), ropes(ropes), deltaTime(deltaTime), gravity(Vector2<double>(0.0f, 1500.0f)) {
     }
     void update()
     {
@@ -30,8 +30,8 @@ public:
         satisfyConstraints();
         updateDerivatives();
     }
-    void applyGravity() {
-        Vector2<double> gravity(0.0f, 1500.0f);
+    void applyGravity()
+    {
         for (Node& node : nodes) {
             node.forces += gravity;
         }
@@ -77,6 +77,7 @@ public:
     }
     void render(std::vector<Node>& nodes, std::vector<Rope>& ropes,  RenderWindow& window)
     {
+        
         for (Rope& rope : ropes) rope.draw(window);
         for (Node& node : nodes) node.draw(window);
     }
