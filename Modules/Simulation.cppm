@@ -63,14 +63,38 @@ public:
         {
             Node* startNode = rope.startNode;
             Node* endNode = rope.endNode;
+
             Vector2<double> direction = startNode->getPosition() - endNode->getPosition();
             double distance = logic::distance(startNode->getPosition(), endNode->getPosition());
-            if (distance > rope.distance)
+
+            double maxSize{};
+            double minSize{};
+            if (rope.type)
+            {
+                maxSize = rope.distance;
+                minSize = rope.distance;
+            }
+            else 
+            {
+                maxSize = rope.maxSize;
+                minSize = rope.minSize;
+            }
+            if (distance > maxSize)
             {
                 Vector2<double> normalizeVector = direction / distance;
-                double c = distance - rope.distance;
-                Vector2<double> p = -c * normalizeVector;
+                double c = distance - maxSize;
+                Vector2<double> p = -c * normalizeVector * 0.5;
+
                 if (!startNode->isStatic) startNode->move(p); 
+                if (!endNode->isStatic) endNode->move(-p);
+            }
+            else if (distance < minSize)
+            {
+                Vector2<double> normalizeVector = direction / distance;
+                double c = minSize - distance;
+                Vector2<double> p = c * normalizeVector * 0.5;
+
+                if (!startNode->isStatic) startNode->move(p);
                 if (!endNode->isStatic) endNode->move(-p);
             }
         }

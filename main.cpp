@@ -38,12 +38,15 @@ int main()
 	bool mode = false;
 	bool selRope = false;
 
+	int modeRope = 1;
+
 	int selectedNode = -1;
 	int selectedRope = -1;
 	int numberNode = 0;
 	int countNodes = 100;
 
 	RenderWindow window(VideoMode(1920, 1080), "Ropes", Style::Fullscreen, settings);
+	window.setVerticalSyncEnabled(true);
 
 	Simulation simulate(nodes, ropes, deltaTime.asSeconds());
 
@@ -80,13 +83,19 @@ int main()
 			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Space)
 			{
 				pause = !pause;
+
+			}
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Q)
+			{
+				if (modeRope) modeRope = 0;
+				else modeRope = 1;
 			}
 			if (event.type == Event::KeyPressed && event.key.code == Keyboard::E)
 			{
 				mode = !mode;
 				resetActivateNodes(nodes);
 			}
-			if (event.type == Event::KeyPressed && event.key.code == Keyboard::R)
+			if (event.type == Event::KeyPressed && event.key.code == Keyboard::C)
 			{
 				nodes.clear();
 				ropes.clear();
@@ -139,7 +148,7 @@ int main()
 						}
 						resetActivateNodes(nodes);
 						double distance = logic::distance(nodes[selectedNode].getPosition(), nodes[i].getPosition());
-						ropes.push_back(Rope(&nodes[selectedNode], &nodes[i], distance));
+						ropes.push_back(Rope(&nodes[selectedNode], &nodes[i], distance, modeRope));
 						selectedNode = -1;
 					}
 				}
@@ -153,11 +162,11 @@ int main()
 			{
 				simulate.update();
 			}
-			window.clear(Color::Black);
-
-			simulate.render(nodes, ropes, window);
-
-			window.display();
 		}
+		window.clear(Color::Black);
+
+		simulate.render(nodes, ropes, window);
+
+		window.display();
 	}
 }

@@ -4,6 +4,7 @@ module;
 #include "SFML/Graphics.hpp"
 
 import Node;
+import Texture;
 
 using namespace sf;
 
@@ -17,14 +18,30 @@ public:
 	double distance;
 	bool activate;
 	ConvexShape rope;
+	int type;
+	double maxSize;
+	double minSize;
 
-	Rope(Node* startNode, Node* endNode, double distance) 
+	Texture ropeFont;
+	Texture steelBeamFont;
+
+	Rope(Node* startNode, Node* endNode, double distance, int type) 
 	{
 		this->startNode = startNode;
 		this->endNode = endNode;
 		this->distance = distance;
+		this->type = type;
 		rope.setPointCount(4);
-		
+		this->maxSize = distance;
+		this->minSize = 0;
+		if (type) 
+		{
+			this->ropeFont.loadFromFile(textures::steelBeam);
+		}
+		else 
+		{
+			this->ropeFont.loadFromFile(textures::rope);
+		}
 	}
 	bool clickRope(Vector2f mouseCoor) 
 	{
@@ -55,6 +72,7 @@ public:
 		
 		rope.setFillColor(Color::White);
 		if (activate) rope.setFillColor(Color::Blue);
+		rope.setTexture(&ropeFont);
 		window.draw(rope);
 	}
 };
