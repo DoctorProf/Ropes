@@ -69,7 +69,7 @@ public:
 
             double maxSize{};
             double minSize{};
-            if (rope.type)
+            if (!rope.type)
             {
                 maxSize = rope.distance;
                 minSize = rope.distance;

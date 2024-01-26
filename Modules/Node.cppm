@@ -11,33 +11,11 @@ export module Node;
 export class Node
 {
 public:
-	static struct Neighbor
-	{
-	private:
-		Node* node;
-		double distanceTo;
-	public:
-		Neighbor(Node* node, double distanceTo)
-		{
-			this->node = node;
-			this->distanceTo = distanceTo;
-		}
-
-		Node* getNode()
-		{
-			return node;
-		}
-		double getDistanceTo()
-		{
-			return distanceTo;
-		}
-	};
-
 	Node() = default;
 
-	Node(double x, double y)
+	Node(double x, double y, int radius)
 	{
-		radius = 15;
+		this->radius = radius;
 		mass = 1.0f;
 		position = Vector2<double>(x - radius, y - radius);
 		node.setRadius(radius);

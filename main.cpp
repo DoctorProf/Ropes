@@ -5,6 +5,7 @@ import Node;
 import Rope;
 import Simulation;
 import Logic;
+import Gui;
 
 using namespace sf;
 
@@ -22,6 +23,45 @@ void resetActivateRopes(std::vector<Rope>& ropes)
 		ropes[i].activate = false;
 	}
 }
+
+VertexArray createGrid(RenderWindow& window, int radius)
+{
+	VertexArray grid;
+	grid.setPrimitiveType(Lines);
+
+	int windowX = window.getSize().x;
+	int windowY = window.getSize().y;
+	int radiusCell = radius * 2;
+
+	for (int i = 0; i <= windowX; i += radiusCell)
+	{
+		Vertex point;
+		point.color = Color::Color(40, 40, 40);
+
+		point.position = Vector2f(i, 0);
+
+		grid.append(point);
+
+		point.position = Vector2f(i, windowY);
+
+		grid.append(point);
+	}
+	for (int i = 0; i <= windowY; i += radiusCell)
+	{
+		Vertex point;
+		point.color = Color::Color(40, 40, 40);
+
+		point.position = Vector2f(0, i);
+
+		grid.append(point);
+
+		point.position = Vector2f(windowX, i);
+
+		grid.append(point);
+	}
+	return grid;
+
+}
 int main()
 {
 	ContextSettings settings;
@@ -35,22 +75,33 @@ int main()
 	std::vector<Rope> ropes;
 
 	bool pause = true;
-	bool mode = false;
+	int mode{};
 	bool selRope = false;
 
-	int modeRope = 1;
+	int modeRope = 0;
 
 	int selectedNode = -1;
-	int selectedRope = -1;
 	int numberNode = 0;
-	int countNodes = 100;
+	int countNodes = 200;
+	int radiusNode = 20;
 
 	RenderWindow window(VideoMode(1920, 1080), "Ropes", Style::Fullscreen, settings);
 	window.setVerticalSyncEnabled(true);
 
+	View world;
+	world.setSize(Vector2f(window.getSize()));
+	world.setCenter(Vector2f(window.getSize().x / 2.0, window.getSize().y / 2.0));
+
+	View guiWindow;
+	guiWindow.setSize(Vector2f(window.getSize()));
+	guiWindow.setCenter(Vector2f(window.getSize().x / 2.0, window.getSize().y / 2.0));
+
 	Simulation simulate(nodes, ropes, deltaTime.asSeconds());
+	Gui gui;
 
 	nodes.resize(countNodes);
+
+	VertexArray grid = createGrid(window, radiusNode);
 
 	while (window.isOpen())
 	{
@@ -60,20 +111,12 @@ int main()
 			if (event.type == Event::MouseMoved)
 			{
 				Vector2i mouseCoor = Mouse::getPosition(window);
-				bool mouseOnAnyRope = false;
+				resetActivateRopes(ropes);
 				for (int i = 0; i < ropes.size(); i++)
 				{
-					if (ropes[i].clickRope(Vector2f(mouseCoor.x, mouseCoor.y)))
-					{
-						ropes[i].activate = true;
-						mouseOnAnyRope = true;
-					}
-					else
-					{
-						ropes[i].activate = false;
-					}
+					ropes[i].activate = ropes[i].clickRope(Vector2f(mouseCoor.x, mouseCoor.y));
+					if(ropes[i].activate) break;
 				}
-				if (!mouseOnAnyRope) resetActivateRopes(ropes);
 			}
 			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
 			{
@@ -92,7 +135,8 @@ int main()
 			}
 			if (event.type == Event::KeyPressed && event.key.code == Keyboard::E)
 			{
-				mode = !mode;
+				mode += 1;
+				if (mode > 2) mode = 0;
 				resetActivateNodes(nodes);
 			}
 			if (event.type == Event::KeyPressed && event.key.code == Keyboard::C)
@@ -108,9 +152,11 @@ int main()
 			{
 				for (int i = 0; i < ropes.size(); i++) 
 				{
-					if (ropes[i].activate)
+					Vector2i mouseCoor = Mouse::getPosition(window);
+					if (ropes[i].activate && ropes[i].clickRope(Vector2f(mouseCoor.x, mouseCoor.y)))
 					{
 						ropes.erase(ropes.begin() + i);
+						break;
 					}
 				}
 			}
@@ -118,7 +164,7 @@ int main()
 			{
 				if (numberNode == nodes.size()) break;
 				Vector2f mouseCoor = window.mapPixelToCoords(Mouse::getPosition(window));
-				nodes[numberNode++] = Node(mouseCoor.x, mouseCoor.y);
+				nodes[numberNode++] = Node(mouseCoor.x, mouseCoor.y, radiusNode);
 			}
 			if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left)
 			{
@@ -128,10 +174,24 @@ int main()
 				{
 					if (nodes[i].clickNode(mouseCoor.x, mouseCoor.y))
 					{
-						if (mode)
+						if (mode == 1)
 						{
+							resetActivateNodes(nodes);
 							nodes[i].isStatic = !nodes[i].isStatic;
 							break;
+						}
+						if (mode == 2)
+						{
+							resetActivateNodes(nodes);
+							for (int j = 0; j < ropes.size(); j++)
+							{
+								if (ropes[j].startNode == &nodes[i] || ropes[j].endNode == &nodes[i])
+								{
+									ropes.erase(ropes.begin() + j);
+								}
+							}
+							nodes[i] = Node();
+							break;							
 						}
 						if (selectedNode == -1)
 						{
@@ -165,7 +225,17 @@ int main()
 		}
 		window.clear(Color::Black);
 
+		window.setView(world);
+
+		window.draw(grid);
+
 		simulate.render(nodes, ropes, window);
+
+		window.setView(guiWindow);
+
+		gui.update(mode, modeRope, pause);
+		gui.draw(window);
+
 
 		window.display();
 	}

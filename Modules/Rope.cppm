@@ -34,7 +34,7 @@ public:
 		rope.setPointCount(4);
 		this->maxSize = distance;
 		this->minSize = 0;
-		if (type) 
+		if (!type) 
 		{
 			this->ropeFont.loadFromFile(textures::steelBeam);
 		}

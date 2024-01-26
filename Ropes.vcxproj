@@ -131,12 +131,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Modules\Gui.cppm" />
     <ClCompile Include="Modules\Logic.cppm" />
     <ClCompile Include="Modules\Node.cppm" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Modules\Rope.cppm" />
     <ClCompile Include="Modules\Simulation.cppm" />
     <ClCompile Include="Modules\Texture.cppm" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\modeBlock.png" />
+    <Image Include="Resources\modeConnect.png" />
+    <Image Include="Resources\modeDelete.png" />
+    <Image Include="Resources\modePause.png" />
+    <Image Include="Resources\modeRope.png" />
+    <Image Include="Resources\modeStart.png" />
+    <Image Include="Resources\modeSteelBeam.png" />
+    <Image Include="Resources\rope.jpg" />
+    <Image Include="Resources\steelBeam.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
