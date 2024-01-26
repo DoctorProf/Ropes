@@ -20,7 +20,7 @@ public:
     double deltaTime;
     Vector2<double> gravity;
     Simulation(std::vector<Node>& nodes, std::vector<Rope>& ropes, double deltaTime)
-        : nodes(nodes), ropes(ropes), deltaTime(deltaTime), gravity(Vector2<double>(0.0f, 1500.0f)) {
+        : nodes(nodes), ropes(ropes), deltaTime(deltaTime), gravity(Vector2<double>(0.0, 1500.0)) {
     }
     void update()
     {

@@ -14,7 +14,8 @@ export namespace textures
 	{
 		"Resources/modeConnect.png",
 		"Resources/modeBlock.png",
-		"Resources/modeDelete.png"
+		"Resources/modeDelete.png",
+		"Resources/modeMove.png"
 	};
 	export std::vector<std::string> texturesBarModeRope =
 	{

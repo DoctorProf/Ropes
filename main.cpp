@@ -85,6 +85,11 @@ int main()
 	int countNodes = 200;
 	int radiusNode = 20;
 
+	bool isDragging = false;
+	Vector2f lastMousePos;
+
+	Node* moveNode{};
+
 	RenderWindow window(VideoMode(1920, 1080), "Ropes", Style::Fullscreen, settings);
 	window.setVerticalSyncEnabled(true);
 
@@ -118,28 +123,29 @@ int main()
 					if(ropes[i].activate) break;
 				}
 			}
-			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
+			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
 			{
 				nodes.clear();
 				window.close();
 			}
-			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Space)
+			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::Space)
 			{
 				pause = !pause;
 
 			}
-			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Q)
+			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::Q)
 			{
 				if (modeRope) modeRope = 0;
 				else modeRope = 1;
 			}
-			if (event.type == Event::KeyPressed && event.key.code == Keyboard::E)
+			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::E)
 			{
+				isDragging = false;
 				mode += 1;
-				if (mode > 2) mode = 0;
+				if (mode > 3) mode = 0;
 				resetActivateNodes(nodes);
 			}
-			if (event.type == Event::KeyPressed && event.key.code == Keyboard::C)
+			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::C)
 			{
 				nodes.clear();
 				ropes.clear();
@@ -148,7 +154,7 @@ int main()
 				nodes.resize(countNodes);
 				window.clear(Color::Black);
 			}
-			if (event.type == Event::KeyPressed && event.key.code == Keyboard::Tab)
+			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::Tab)
 			{
 				for (int i = 0; i < ropes.size(); i++) 
 				{
@@ -160,13 +166,13 @@ int main()
 					}
 				}
 			}
-			if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Right)
+			else if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Right)
 			{
 				if (numberNode == nodes.size()) break;
 				Vector2f mouseCoor = window.mapPixelToCoords(Mouse::getPosition(window));
 				nodes[numberNode++] = Node(mouseCoor.x, mouseCoor.y, radiusNode);
 			}
-			if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left)
+			else if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left)
 			{
 				Vector2f mouseCoor = window.mapPixelToCoords(Mouse::getPosition(window));
 
@@ -193,6 +199,14 @@ int main()
 							nodes[i] = Node();
 							break;							
 						}
+						if (mode == 3)
+						{
+							resetActivateNodes(nodes);
+							isDragging = true;
+							lastMousePos = window.mapPixelToCoords(Mouse::getPosition(window));
+							moveNode = &nodes[i];
+							break;
+						}
 						if (selectedNode == -1)
 						{
 							resetActivateNodes(nodes);
@@ -213,6 +227,19 @@ int main()
 					}
 				}
 			}
+			else if (event.type == Event::MouseButtonReleased && event.mouseButton.button == Mouse::Left)
+			{
+				isDragging = false;
+			}
+		}
+		if (isDragging)
+		{
+			Vector2f currentMousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+			Vector2<double> delta = Vector2<double>(currentMousePos) - moveNode->getPosition();
+			double distance = logic::distance(Vector2<double>(moveNode->getPosition()), Vector2<double>(currentMousePos));
+
+			moveNode->forces += delta * distance;
+
 		}
 		accumulate += logic.restart();
 		while (accumulate >= deltaTime)
