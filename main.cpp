@@ -1,13 +1,7 @@
-﻿#include <iostream>
-#include "SFML/Graphics.hpp"
-
-import Node;
-import Rope;
-import Simulation;
-import Logic;
-import Gui;
-
-using namespace sf;
+﻿
+#include "Headers/Texture.h"
+#include "Headers/Gui.h"
+#include "Headers/Simulation.h"
 
 void resetActivateNodes(std::vector<Node>& nodes) 
 {
@@ -16,6 +10,7 @@ void resetActivateNodes(std::vector<Node>& nodes)
 		nodes[i].activate = false;
 	}
 }
+
 void resetActivateRopes(std::vector<Rope>& ropes)
 {
 	for (int i = 0; i < ropes.size(); i++)
@@ -75,14 +70,16 @@ int main()
 	std::vector<Rope> ropes;
 
 	bool pause = true;
-	int mode{};
-	bool selRope = false;
 
+	bool modeMouseLeftClick = true;
+	int modeNode = 0;
 	int modeRope = 0;
+	int modeAction = 0;
 
 	int selectedNode = -1;
-	int numberNode = 0;
-	int countNodes = 200;
+
+	int idNode = 0;
+	int countNodes = 500;
 	int radiusNode = 20;
 
 	bool isDragging = false;
@@ -91,7 +88,9 @@ int main()
 	Node* moveNode{};
 
 	RenderWindow window(VideoMode(1920, 1080), "Ropes", Style::Fullscreen, settings);
+
 	window.setVerticalSyncEnabled(true);
+	window.setMouseCursorVisible(false);
 
 	View world;
 	world.setSize(Vector2f(window.getSize()));
@@ -101,12 +100,26 @@ int main()
 	guiWindow.setSize(Vector2f(window.getSize()));
 	guiWindow.setCenter(Vector2f(window.getSize().x / 2.0, window.getSize().y / 2.0));
 
-	Simulation simulate(nodes, ropes, deltaTime.asSeconds());
+	Simulation simulate(nodes, ropes, deltaTime.asSeconds(), radiusNode);
 	Gui gui;
 
-	nodes.resize(countNodes);
+	nodes.reserve(countNodes);
 
 	VertexArray grid = createGrid(window, radiusNode);
+
+	CircleShape imaginaryNode;
+	RectangleShape deleteNode;
+	RectangleShape hand;
+	RectangleShape cursor;
+
+	Texture cross;
+	cross.loadFromFile(textures::cross);
+	Texture handTex;
+	handTex.loadFromFile(textures::hand);
+	Texture cursorTex;
+	cursorTex.loadFromFile(textures::cursor);
+
+	imaginaryNode.setFillColor(Color(255, 255, 255, 100));
 
 	while (window.isOpen())
 	{
@@ -123,8 +136,9 @@ int main()
 					if(ropes[i].activate) break;
 				}
 			}
-			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
+			else if ((event.type == Event::KeyPressed && event.key.code == Keyboard::Escape) || event.type == sf::Event::Closed)
 			{
+				ropes.clear();
 				nodes.clear();
 				window.close();
 			}
@@ -140,19 +154,44 @@ int main()
 			}
 			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::E)
 			{
-				isDragging = false;
-				mode += 1;
-				if (mode > 3) mode = 0;
+				modeNode += 1;
+				if (modeNode > 2) modeNode = 0;
 				resetActivateNodes(nodes);
+			}
+			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::R)
+			{
+				isDragging = false;
+				modeAction += 1;
+				if (modeAction > 2) modeAction = 0;
+			}
+			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::V)
+			{
+				simulate.saveStruct();
+			}
+			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::L)
+			{
+				nodes.reserve(countNodes);
+				simulate.loadStruct();
+				grid = createGrid(window, radiusNode);
+			}
+			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::LAlt)
+			{
+				modeMouseLeftClick = !modeMouseLeftClick;
 			}
 			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::C)
 			{
 				nodes.clear();
 				ropes.clear();
+
 				pause = true;
-				numberNode = 0;
-				nodes.resize(countNodes);
-				window.clear(Color::Black);
+				modeMouseLeftClick = true;
+
+				modeNode = 0;
+				modeRope = 0;
+				modeAction = 0;
+				idNode = 0;
+
+				nodes.reserve(countNodes);
 			}
 			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::Tab)
 			{
@@ -166,32 +205,40 @@ int main()
 					}
 				}
 			}
-			else if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Right)
-			{
-				if (numberNode == nodes.size()) break;
-				Vector2f mouseCoor = window.mapPixelToCoords(Mouse::getPosition(window));
-				nodes[numberNode++] = Node(mouseCoor.x, mouseCoor.y, radiusNode);
-			}
 			else if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left)
 			{
 				Vector2f mouseCoor = window.mapPixelToCoords(Mouse::getPosition(window));
-
+				if (modeAction == 0 && modeMouseLeftClick)
+				{
+					resetActivateNodes(nodes);
+					if (nodes.size() == nodes.capacity()) break;
+					Vector2f mouseCoor = window.mapPixelToCoords(Mouse::getPosition(window));
+					nodes.push_back(Node(idNode, imaginaryNode.getPosition().x, imaginaryNode.getPosition().y, radiusNode));
+					idNode += 1;
+					break;
+				}
 				for (int i = 0; i < nodes.size(); i++)
 				{
 					if (nodes[i].clickNode(mouseCoor.x, mouseCoor.y))
 					{
-						if (mode == 1)
+						if (!modeMouseLeftClick && modeNode == 1)
 						{
 							resetActivateNodes(nodes);
-							nodes[i].isStatic = !nodes[i].isStatic;
+							nodes[i].type = nodes[i].type != 1 ? 1 : 0;
 							break;
 						}
-						if (mode == 2)
+						if (!modeMouseLeftClick && modeNode == 2)
+						{
+							resetActivateNodes(nodes);
+							nodes[i].type = nodes[i].type != 2 ? 2 : 0;
+							break;
+						}
+						if (modeMouseLeftClick && modeAction == 1)
 						{
 							resetActivateNodes(nodes);
 							for (int j = 0; j < ropes.size(); j++)
 							{
-								if (ropes[j].startNode == &nodes[i] || ropes[j].endNode == &nodes[i])
+								if (ropes[j].startNode->id == nodes[i].id || ropes[j].endNode->id == nodes[i].id)
 								{
 									ropes.erase(ropes.begin() + j);
 								}
@@ -199,7 +246,7 @@ int main()
 							nodes[i] = Node();
 							break;							
 						}
-						if (mode == 3)
+						if (modeMouseLeftClick && modeAction == 2)
 						{
 							resetActivateNodes(nodes);
 							isDragging = true;
@@ -207,14 +254,14 @@ int main()
 							moveNode = &nodes[i];
 							break;
 						}
-						if (selectedNode == -1)
+						if (!modeMouseLeftClick && selectedNode == -1)
 						{
 							resetActivateNodes(nodes);
 							nodes[i].activate = !nodes[i].activate;
 							selectedNode = i;
 							break;
 						}
-						if (nodes[selectedNode] == nodes[i])
+						if (!modeMouseLeftClick && nodes[selectedNode] == nodes[i])
 						{
 							resetActivateNodes(nodes);
 							selectedNode = -1;
@@ -232,9 +279,9 @@ int main()
 				isDragging = false;
 			}
 		}
-		if (isDragging)
+		if (!pause && isDragging)
 		{
-			Vector2f currentMousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+			Vector2f currentMousePos = window.mapPixelToCoords(Mouse::getPosition(window));
 			Vector2<double> delta = Vector2<double>(currentMousePos) - moveNode->getPosition();
 			double distance = logic::distance(Vector2<double>(moveNode->getPosition()), Vector2<double>(currentMousePos));
 
@@ -256,13 +303,46 @@ int main()
 
 		window.draw(grid);
 
+
 		simulate.render(nodes, ropes, window);
 
 		window.setView(guiWindow);
 
-		gui.update(mode, modeRope, pause);
+		gui.update(modeNode, modeRope, pause, modeAction);
 		gui.draw(window);
 
+		Vector2f mouseCoor = window.mapPixelToCoords(Mouse::getPosition(window));
+		if (modeAction == 0 && modeMouseLeftClick)
+		{
+			imaginaryNode.setRadius(radiusNode);
+			Vector2f position = Vector2f(std::floor(mouseCoor.x / radiusNode) * radiusNode - radiusNode, std::floor(mouseCoor.y / radiusNode) * radiusNode - radiusNode);
+			imaginaryNode.setPosition(position);
+			window.draw(imaginaryNode);
+		}
+		else if (modeAction == 1 && modeMouseLeftClick)
+		{
+			deleteNode.setSize(Vector2f(2 * radiusNode, 2 * radiusNode));
+			deleteNode.setTexture(&cross);
+			deleteNode.setPosition(Vector2f(mouseCoor.x - radiusNode, mouseCoor.y - radiusNode));
+
+			window.draw(deleteNode);
+		}
+		else if (modeAction == 2 && modeMouseLeftClick)
+		{
+			hand.setSize(Vector2f(2 * radiusNode, 2 * radiusNode));
+			hand.setTexture(&handTex);
+			hand.setPosition(Vector2f(mouseCoor.x - radiusNode, mouseCoor.y - radiusNode));
+
+			window.draw(hand);
+		}
+		if (!modeMouseLeftClick || ((modeAction == 0 || modeAction == 1) && modeMouseLeftClick))
+		{
+			cursor.setSize(Vector2f(2 * radiusNode, 2 * radiusNode));
+			cursor.setTexture(&cursorTex);
+			cursor.setPosition(Vector2f(mouseCoor.x - radiusNode, mouseCoor.y));
+
+			window.draw(cursor);
+		}
 
 		window.display();
 	}

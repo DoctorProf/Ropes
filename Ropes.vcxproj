@@ -120,8 +120,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
-      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard_C>Default</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,24 +131,41 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Modules\Gui.cppm" />
-    <ClCompile Include="Modules\Logic.cppm" />
-    <ClCompile Include="Modules\Node.cppm" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Modules\Rope.cppm" />
-    <ClCompile Include="Modules\Simulation.cppm" />
-    <ClCompile Include="Modules\Texture.cppm" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Resources\changeMouse.png" />
+    <Image Include="Resources\clear.png" />
+    <Image Include="Resources\cross.png" />
+    <Image Include="Resources\cursor.png" />
+    <Image Include="Resources\deleteRope.png" />
+    <Image Include="Resources\hand.png" />
+    <Image Include="Resources\modeAccelerator.png" />
+    <Image Include="Resources\modeAdd.png" />
     <Image Include="Resources\modeBlock.png" />
     <Image Include="Resources\modeConnect.png" />
     <Image Include="Resources\modeDelete.png" />
+    <Image Include="Resources\modeMove.png" />
     <Image Include="Resources\modePause.png" />
     <Image Include="Resources\modeRope.png" />
     <Image Include="Resources\modeStart.png" />
     <Image Include="Resources\modeSteelBeam.png" />
     <Image Include="Resources\rope.jpg" />
     <Image Include="Resources\steelBeam.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Headers\Gui.h" />
+    <ClInclude Include="Headers\Logic.h" />
+    <ClInclude Include="Headers\Node.h" />
+    <ClInclude Include="Headers\Rope.h" />
+    <ClInclude Include="Headers\Simulation.h" />
+    <ClInclude Include="Headers\Texture.h" />
+    <ClCompile Include="Sources\Gui.cpp" />
+    <ClCompile Include="Sources\Logic.cpp" />
+    <ClCompile Include="Sources\Node.cpp" />
+    <ClCompile Include="Sources\Rope.cpp" />
+    <ClCompile Include="Sources\Simulation.cpp" />
+    <ClCompile Include="Sources\Texture.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -18,23 +18,23 @@
     <ClCompile Include="main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Modules\Node.cppm">
-      <Filter>Исходные файлы</Filter>
+    <ClCompile Include="Sources\Node.cpp">
+      <Filter>Файлы заголовков</Filter>
     </ClCompile>
-    <ClCompile Include="Modules\Logic.cppm">
-      <Filter>Исходные файлы</Filter>
+    <ClCompile Include="Sources\Logic.cpp">
+      <Filter>Файлы заголовков</Filter>
     </ClCompile>
-    <ClCompile Include="Modules\Simulation.cppm">
-      <Filter>Исходные файлы</Filter>
+    <ClCompile Include="Sources\Texture.cpp">
+      <Filter>Файлы заголовков</Filter>
     </ClCompile>
-    <ClCompile Include="Modules\Rope.cppm">
-      <Filter>Исходные файлы</Filter>
+    <ClCompile Include="Sources\Simulation.cpp">
+      <Filter>Файлы заголовков</Filter>
     </ClCompile>
-    <ClCompile Include="Modules\Texture.cppm">
-      <Filter>Исходные файлы</Filter>
+    <ClCompile Include="Sources\Rope.cpp">
+      <Filter>Файлы заголовков</Filter>
     </ClCompile>
-    <ClCompile Include="Modules\Gui.cppm">
-      <Filter>Исходные файлы</Filter>
+    <ClCompile Include="Sources\Gui.cpp">
+      <Filter>Файлы заголовков</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -65,5 +65,52 @@
     <Image Include="Resources\rope.jpg">
       <Filter>Файлы ресурсов</Filter>
     </Image>
+    <Image Include="Resources\changeMouse.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\clear.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\cross.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\cursor.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\deleteRope.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\hand.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\modeAccelerator.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\modeAdd.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Resources\modeMove.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Headers\Texture.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Gui.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Logic.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Node.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Rope.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Simulation.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
