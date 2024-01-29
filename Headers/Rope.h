@@ -5,6 +5,8 @@
 
 using namespace sf;
 
+class Node; 
+
 class Rope
 {
 public:
@@ -20,11 +22,13 @@ public:
 	Texture ropeFont;
 	Texture steelBeamFont;
 
-	Rope();
-
 	Rope(Node* startNode, Node* endNode, double distance, int type);
 
 	bool clickRope(Vector2f mouseCoor);
 
 	void draw(RenderWindow& window);
+
+	bool operator==(const Rope& other) const;
+
+	Rope& operator=(const Rope& other);
 };

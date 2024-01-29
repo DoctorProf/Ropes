@@ -1,7 +1,7 @@
 
 #include "../Headers/Node.h"
 
-Node::Node() = default;
+//Node::Node() = default;
 
 Node::Node(int id, double x, double y, int radius)
 {

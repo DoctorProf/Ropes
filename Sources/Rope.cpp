@@ -1,24 +1,25 @@
 
 #include "../Headers/Rope.h"
 
-Rope::Rope() = default;
-
 Rope::Rope(Node* startNode, Node* endNode, double distance, int type)
 {
 	this->startNode = startNode;
 	this->endNode = endNode;
 	this->distance = distance;
 	this->type = type;
+
 	rope.setPointCount(4);
+
 	this->maxSize = distance;
 	this->minSize = 0;
+
 	if (!type)
 	{
-		this->ropeFont.loadFromFile(textures::steelBeam);
+		this->ropeFont = textures::steelBeam;
 	}
 	else
 	{
-		this->ropeFont.loadFromFile(textures::rope);
+		this->ropeFont = textures::rope;	
 	}
 }
 
@@ -54,4 +55,22 @@ void Rope::draw(RenderWindow& window)
 	if (activate) rope.setFillColor(Color::Blue);
 	rope.setTexture(&ropeFont);
 	window.draw(rope);
+}
+bool Rope::operator==(const Rope& other) const
+{
+	return (startNode == other.startNode) &&
+		(endNode == other.endNode) &&
+		(distance == other.distance) &&
+		(type == other.type);
+}
+
+Rope& Rope::operator=(const Rope& other) {
+	if (this != &other)
+	{
+		distance = other.distance;
+		type = other.type;
+		minSize = other.minSize;
+		maxSize = other.maxSize;
+	}
+	return *this;
 }

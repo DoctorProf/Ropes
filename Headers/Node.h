@@ -5,11 +5,13 @@
 
 using namespace sf;
 
+class Rope;
+
 class Node
 {
 public:
 
-	Node();
+	//Node();
 
 	Node(int id, double x, double y, int radius);
 

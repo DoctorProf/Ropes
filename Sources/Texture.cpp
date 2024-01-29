@@ -1,35 +1,81 @@
+#include "../Headers/Texture.h"
 
-#include  "../Headers/Texture.h"
+std::vector<Texture> textures::texturesBarMode;
+std::vector<Texture> textures::texturesBarAction;
+std::vector<Texture> textures::texturesBarModeRope;
+std::vector<Texture> textures::texturesBarStatus;
 
-std::string textures::rope = "Resources/rope.jpg";
-std::string textures::steelBeam = "Resources/steelBeam.jpg";
-std::string textures::clear = "Resources/clear.png";
-std::string textures::cross = "Resources/cross.png";
-std::string textures::hand = "Resources/hand.png";
-std::string textures::cursor = "Resources/cursor.png";
-std::string textures::deleteRope = "Resources/deleteRope.png";
-std::string textures::changeMouse = "Resources/changeMouse.png";
+Texture textures::rope;
+Texture textures::steelBeam;
+Texture textures::clear;
+Texture textures::cross;
+Texture textures::hand;
+Texture textures::cursor;
+Texture textures::deleteRope;
+Texture textures::changeMouse;
 
-std::vector<std::string> textures::texturesBarMode =
-{
-	"Resources/modeConnect.png",
-	"Resources/modeBlock.png",
-	"Resources/modeAccelerator.png"
+Texture textures::modeAccelerator;
+Texture textures::modeConnect;
+Texture textures::modeBlock;
 
-};
-std::vector<std::string> textures::texturesBarAction =
+Texture textures::modeAdd;
+Texture textures::modeDelete;
+Texture textures::modeMove;
+
+Texture textures::modeSteelBeam;
+Texture textures::modeRope;
+
+Texture textures::modeStart;
+Texture textures::modePause;
+
+void textures::loadTextures()
 {
-	"Resources/modeAdd.png",
-	"Resources/modeDelete.png",
-	"Resources/modeMove.png"
-};
-std::vector<std::string> textures::texturesBarModeRope =
-{
-	"Resources/modeSteelBeam.png",
-	"Resources/modeRope.png"
-};
-std::vector<std::string> textures::texturesBarStatus =
-{
-	"Resources/modeStart.png",
-	"Resources/modePause.png"
-};
+    rope.loadFromFile("Resources/rope.png");
+    steelBeam.loadFromFile("Resources/steelBeam.jpg");
+    clear.loadFromFile("Resources/clear.png");
+    cross.loadFromFile("Resources/cross.png");
+    hand.loadFromFile("Resources/hand.png");
+    cursor.loadFromFile("Resources/cursor.png");
+    deleteRope.loadFromFile("Resources/deleteRope.png");
+    changeMouse.loadFromFile("Resources/changeMouse.png");
+
+    modeConnect.loadFromFile("Resources/modeConnect.png");
+    modeBlock.loadFromFile("Resources/modeBlock.png");
+    modeAccelerator.loadFromFile("Resources/modeAccelerator.png");
+
+    texturesBarMode =
+    {
+        modeConnect,
+        modeBlock,
+        modeAccelerator
+    };
+
+    modeAdd.loadFromFile("Resources/modeAdd.png");
+    modeDelete.loadFromFile("Resources/modeDelete.png");
+    modeMove.loadFromFile("Resources/modeMove.png");
+
+    texturesBarAction =
+    {
+        modeAdd,
+        modeDelete,
+        modeMove
+    };
+
+    modeSteelBeam.loadFromFile("Resources/modeSteelBeam.png");
+    modeRope.loadFromFile("Resources/modeRope.png");
+
+    texturesBarModeRope =
+    {
+        modeSteelBeam,
+        modeRope
+    };
+
+    modeStart.loadFromFile("Resources/modeStart.png");
+    modePause.loadFromFile("Resources/modePause.png");
+
+    texturesBarStatus =
+    {
+        modeStart,
+        modePause
+    };
+}

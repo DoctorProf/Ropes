@@ -19,10 +19,11 @@ public:
     std::vector<Rope>& ropes;
     double deltaTime;
     int& radius;
+    int& idNode;
 
     Vector2<double> gravity;
 
-    Simulation(std::vector<Node>& nodes, std::vector<Rope>& ropes, double deltaTime, int& radius);
+    Simulation(std::vector<Node>& nodes, std::vector<Rope>& ropes, double deltaTime, int& radius, int& idNode);
 
     void update();
 

@@ -1,24 +1,43 @@
 #pragma once
 
 #include <iostream>
+#include <SFML/Graphics.hpp>
 #include <vector>
+
+using namespace sf;
 
 namespace textures
 {
-	extern std::string rope;
-	extern std::string steelBeam;
-	extern std::string clear;
-	extern std::string cross;
-	extern std::string hand;
-	extern std::string cursor;
-	extern std::string deleteRope;
-	extern std::string changeMouse;
+    extern Texture rope;
+    extern Texture steelBeam;
+    extern Texture clear;
+    extern Texture cross;
+    extern Texture hand;
+    extern Texture cursor;
+    extern Texture deleteRope;
+    extern Texture changeMouse;
 
-	extern std::vector<std::string> texturesBarMode;
+    extern Texture modeConnect;
+    extern Texture modeBlock;
+    extern Texture modeAccelerator;
 
-	extern std::vector<std::string> texturesBarAction;
+    extern std::vector<Texture> texturesBarMode;
 
-	extern std::vector<std::string> texturesBarModeRope;
+    extern Texture modeAdd;
+    extern Texture modeDelete;
+    extern Texture modeMove;
 
-	extern std::vector<std::string> texturesBarStatus;
+    extern std::vector<Texture> texturesBarAction;
+
+    extern Texture modeSteelBeam;
+    extern Texture modeRope;
+
+    extern std::vector<Texture> texturesBarModeRope;
+
+    extern Texture modeStart;
+    extern Texture modePause;
+
+    extern std::vector<Texture> texturesBarStatus;
+
+    void loadTextures();
 }

@@ -1,8 +1,8 @@
 
 #include "../Headers/Simulation.h"
 
-Simulation::Simulation(std::vector<Node>& nodes, std::vector<Rope>& ropes, double deltaTime, int& radius)
-    : nodes(nodes), ropes(ropes), deltaTime(deltaTime), radius(radius)
+Simulation::Simulation(std::vector<Node>& nodes, std::vector<Rope>& ropes, double deltaTime, int& radius, int& idNode)
+    : nodes(nodes), ropes(ropes), deltaTime(deltaTime), radius(radius), idNode(idNode)
 {
     this->gravity = Vector2<double>(0.0, 1500.0);
 }
@@ -33,7 +33,7 @@ void Simulation::applyGravity()
 
 void Simulation::applyAirFriction()
 {
-    double friction_coef = 0.2f;
+    double friction_coef = 0.4f;
     for (Node& node : nodes) {
         node.forces -= node.velocity * friction_coef;
     }
@@ -136,7 +136,8 @@ void Simulation::saveStruct()
         json jsonRope = 
         {
             {"type", rope.type},
-            {"nodes", {rope.startNode->id, rope.endNode->id}}
+            {"nodes", {rope.startNode->id, rope.endNode->id}},
+            {"distance", rope.distance}
         };
         jsonRopes.push_back(jsonRope);
     }
@@ -158,6 +159,7 @@ void Simulation::loadStruct()
     json world = json::parse(file);
 
     radius = world["global"]["radius"];
+    idNode = world["points"][world["points"].size() - 1]["id"] + 1;
 
     for (int i = 0; i < world["points"].size(); i++) 
     {
@@ -166,14 +168,21 @@ void Simulation::loadStruct()
     }
     for (int i = 0; i < world["ropes"].size(); i++) 
     {
-        Node* startNode{};
-        Node* endNode{};
-        for (int j = 0; j < nodes.size(); j++)
-        {
-            if (world["ropes"][i]["nodes"][0] == nodes[j].id) startNode = &nodes[j];
-            if (world["ropes"][i]["nodes"][1] == nodes[j].id) endNode = &nodes[j];
-        }
-        double distance = logic::distance(startNode->getPosition(), endNode->getPosition());
-        ropes.push_back(Rope(startNode, endNode, distance, world["ropes"][i]["type"]));
+        int idStart = world["ropes"][i]["nodes"][0];
+        int idEnd = world["ropes"][i]["nodes"][1];
+
+        auto start = std::find_if(nodes.begin(), nodes.end(), [idStart](Node& node) 
+            {
+                return node.id == idStart;
+            });
+        auto end = std::find_if(nodes.begin(), nodes.end(), [idEnd](Node& node)
+            {
+                return node.id == idEnd;
+            });
+        Node* startNode =  &*start;
+        Node* endNode = &*end;
+        double distance = world["ropes"][i]["distance"];
+        int type = world["ropes"][i]["type"];
+        ropes.push_back(Rope(startNode, endNode, distance, type));
     }
 }

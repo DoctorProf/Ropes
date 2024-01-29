@@ -59,6 +59,7 @@ VertexArray createGrid(RenderWindow& window, int radius)
 }
 int main()
 {
+	textures::loadTextures();
 	ContextSettings settings;
 	settings.antialiasingLevel = 8;
 
@@ -79,7 +80,7 @@ int main()
 	int selectedNode = -1;
 
 	int idNode = 0;
-	int countNodes = 500;
+	int countNodes = 2000;
 	int radiusNode = 20;
 
 	bool isDragging = false;
@@ -100,7 +101,7 @@ int main()
 	guiWindow.setSize(Vector2f(window.getSize()));
 	guiWindow.setCenter(Vector2f(window.getSize().x / 2.0, window.getSize().y / 2.0));
 
-	Simulation simulate(nodes, ropes, deltaTime.asSeconds(), radiusNode);
+	Simulation simulate(nodes, ropes, deltaTime.asSeconds(), radiusNode, idNode);
 	Gui gui;
 
 	nodes.reserve(countNodes);
@@ -111,13 +112,6 @@ int main()
 	RectangleShape deleteNode;
 	RectangleShape hand;
 	RectangleShape cursor;
-
-	Texture cross;
-	cross.loadFromFile(textures::cross);
-	Texture handTex;
-	handTex.loadFromFile(textures::hand);
-	Texture cursorTex;
-	cursorTex.loadFromFile(textures::cursor);
 
 	imaginaryNode.setFillColor(Color(255, 255, 255, 100));
 
@@ -145,12 +139,14 @@ int main()
 			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::Space)
 			{
 				pause = !pause;
-
+				for (Node& node : nodes) 
+				{
+					node.angle = 0;
+				}
 			}
 			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::Q)
 			{
-				if (modeRope) modeRope = 0;
-				else modeRope = 1;
+				modeRope = modeRope ? 0 : 1;
 			}
 			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::E)
 			{
@@ -195,12 +191,12 @@ int main()
 			}
 			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::Tab)
 			{
-				for (int i = 0; i < ropes.size(); i++) 
+				for (int i = ropes.size() - 1; i >= 0; i--)
 				{
 					Vector2i mouseCoor = Mouse::getPosition(window);
-					if (ropes[i].activate && ropes[i].clickRope(Vector2f(mouseCoor.x, mouseCoor.y)))
+					if (ropes[i].activate)
 					{
-						ropes.erase(ropes.begin() + i);
+
 						break;
 					}
 				}
@@ -243,8 +239,8 @@ int main()
 									ropes.erase(ropes.begin() + j);
 								}
 							}
-							nodes[i] = Node();
-							break;							
+							nodes.erase(nodes.begin() + i);
+							break;
 						}
 						if (modeMouseLeftClick && modeAction == 2)
 						{
@@ -322,7 +318,7 @@ int main()
 		else if (modeAction == 1 && modeMouseLeftClick)
 		{
 			deleteNode.setSize(Vector2f(2 * radiusNode, 2 * radiusNode));
-			deleteNode.setTexture(&cross);
+			deleteNode.setTexture(&textures::cross);
 			deleteNode.setPosition(Vector2f(mouseCoor.x - radiusNode, mouseCoor.y - radiusNode));
 
 			window.draw(deleteNode);
@@ -330,7 +326,7 @@ int main()
 		else if (modeAction == 2 && modeMouseLeftClick)
 		{
 			hand.setSize(Vector2f(2 * radiusNode, 2 * radiusNode));
-			hand.setTexture(&handTex);
+			hand.setTexture(&textures::hand);
 			hand.setPosition(Vector2f(mouseCoor.x - radiusNode, mouseCoor.y - radiusNode));
 
 			window.draw(hand);
@@ -338,7 +334,7 @@ int main()
 		if (!modeMouseLeftClick || ((modeAction == 0 || modeAction == 1) && modeMouseLeftClick))
 		{
 			cursor.setSize(Vector2f(2 * radiusNode, 2 * radiusNode));
-			cursor.setTexture(&cursorTex);
+			cursor.setTexture(&textures::cursor);
 			cursor.setPosition(Vector2f(mouseCoor.x - radiusNode, mouseCoor.y));
 
 			window.draw(cursor);

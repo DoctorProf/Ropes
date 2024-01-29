@@ -23,14 +23,6 @@ public:
     RectangleShape barDeleteRope;
     RectangleShape barChangeMouse;
 
-    Texture barModeTex;
-    Texture barLinkTex;
-    Texture barActionTex;
-    Texture barStatusTex;
-    Texture barClearTex;
-    Texture barDeleteRopeTex;
-    Texture barChangeMouseTex;
-
     int modeNode;
     int modeRope;
     int modeAction;

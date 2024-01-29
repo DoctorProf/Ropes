@@ -19,15 +19,12 @@ Gui::Gui()
 
     barClear.setSize(sizeBar);
     barClear.setPosition(sf::Vector2f(251, 1000));
-    barClearTex.loadFromFile(textures::clear);
 
     barDeleteRope.setSize(sizeBar);
     barDeleteRope.setPosition(sf::Vector2f(311, 1000));
-    barDeleteRopeTex.loadFromFile(textures::deleteRope);
 
     barChangeMouse.setSize(sizeBar);
     barChangeMouse.setPosition(sf::Vector2f(371, 1000));
-    barChangeMouseTex.loadFromFile(textures::changeMouse);
 }
 
 void Gui::update(int modeNode, int modeRope, int status, int modeAction)
@@ -36,22 +33,17 @@ void Gui::update(int modeNode, int modeRope, int status, int modeAction)
     this->modeRope = modeRope;
     this->modeAction = modeAction;
     this->status = status;
-
-    barModeTex.loadFromFile(textures::texturesBarMode[modeNode]);
-    barLinkTex.loadFromFile(textures::texturesBarModeRope[modeRope]);
-    barActionTex.loadFromFile(textures::texturesBarAction[modeAction]);
-    barStatusTex.loadFromFile(textures::texturesBarStatus[status]);
 }
 
 void Gui::draw(sf::RenderWindow& window)
 {
-    barMode.setTexture(&barModeTex);
-    barLink.setTexture(&barLinkTex);
-    barAction.setTexture(&barActionTex);
-    barStatus.setTexture(&barStatusTex);
-    barClear.setTexture(&barClearTex);
-    barDeleteRope.setTexture(&barDeleteRopeTex);
-    barChangeMouse.setTexture(&barChangeMouseTex);
+    barMode.setTexture(&textures::texturesBarMode[modeNode]);
+    barLink.setTexture(&textures::texturesBarModeRope[modeRope]);
+    barAction.setTexture(&textures::texturesBarAction[modeAction]);
+    barStatus.setTexture(&textures::texturesBarStatus[status]);
+    barClear.setTexture(&textures::clear);
+    barDeleteRope.setTexture(&textures::deleteRope);
+    barChangeMouse.setTexture(&textures::changeMouse);
 
     window.draw(barMode);
     window.draw(barLink);
