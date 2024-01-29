@@ -57,11 +57,22 @@ void Simulation::satisfyConstraints()
 {
     for (Rope& rope : ropes)
     {
-        Node* startNode = rope.startNode;
-        Node* endNode = rope.endNode;
+        int idStart = rope.idStartNode;
+        auto start = std::find_if(nodes.begin(), nodes.end(), [idStart](Node& node)
+            {
+                return node.id == idStart;
+            });
+        Node& startNode = *start;
 
-        Vector2<double> direction = startNode->getPosition() - endNode->getPosition();
-        double distance = logic::distance(startNode->getPosition(), endNode->getPosition());
+        int idEnd = rope.idEndNode;
+        auto end = std::find_if(nodes.begin(), nodes.end(), [idEnd](Node& node)
+            {
+                return node.id == idEnd;
+            });
+        Node& endNode = *end;
+
+        Vector2<double> direction = startNode.getPosition() - endNode.getPosition();
+        double distance = logic::distance(startNode.getPosition(), endNode.getPosition());
 
         double maxSize{};
         double minSize{};
@@ -81,8 +92,8 @@ void Simulation::satisfyConstraints()
             double c = distance - maxSize;
             Vector2<double> p = -c * normalizeVector * 0.5;
 
-            if (startNode->type != 1) startNode->move(p);
-            if (endNode->type != 1) endNode->move(-p);
+            if (startNode.type != 1) startNode.move(p);
+            if (endNode.type != 1) endNode.move(-p);
         }
         else if (distance < minSize)
         {
@@ -90,8 +101,8 @@ void Simulation::satisfyConstraints()
             double c = minSize - distance;
             Vector2<double> p = c * normalizeVector * 0.5;
 
-            if (startNode->type != 1) startNode->move(p);
-            if (endNode->type != 1) endNode->move(-p);
+            if (startNode.type != 1) startNode.move(p);
+            if (endNode.type != 1) endNode.move(-p);
         }
     }
 }
@@ -99,7 +110,7 @@ void Simulation::satisfyConstraints()
 void Simulation::render(std::vector<Node>& nodes, std::vector<Rope>& ropes, RenderWindow& window)
 {
 
-    for (Rope& rope : ropes) rope.draw(window);
+    for (Rope& rope : ropes) rope.draw(window, nodes);
     for (Node& node : nodes) node.draw(window);
 }
 
@@ -136,7 +147,7 @@ void Simulation::saveStruct()
         json jsonRope = 
         {
             {"type", rope.type},
-            {"nodes", {rope.startNode->id, rope.endNode->id}},
+            {"nodes", {rope.idStartNode, rope.idEndNode}},
             {"distance", rope.distance}
         };
         jsonRopes.push_back(jsonRope);
@@ -179,10 +190,10 @@ void Simulation::loadStruct()
             {
                 return node.id == idEnd;
             });
-        Node* startNode =  &*start;
-        Node* endNode = &*end;
+        Node startNode =  *start;
+        Node endNode = *end;
         double distance = world["ropes"][i]["distance"];
         int type = world["ropes"][i]["type"];
-        ropes.push_back(Rope(startNode, endNode, distance, type));
+        ropes.push_back(Rope(startNode.id, endNode.id, distance, type));
     }
 }
