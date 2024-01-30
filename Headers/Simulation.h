@@ -15,15 +15,15 @@ class Simulation
 {
 public:
 
-    std::vector<Node>& nodes;
-    std::vector<Rope>& ropes;
+    std::vector<Node*>& nodes;
+    std::vector<Rope*>& ropes;
     double deltaTime;
     int& radius;
     int& idNode;
 
     Vector2<double> gravity;
 
-    Simulation(std::vector<Node>& nodes, std::vector<Rope>& ropes, double deltaTime, int& radius, int& idNode);
+    Simulation(std::vector<Node*>& nodes, std::vector<Rope*>& ropes, double deltaTime, int& radius, int& idNode);
 
     void update();
 
@@ -37,7 +37,7 @@ public:
 
     void satisfyConstraints();
 
-    void render(std::vector<Node>& nodes, std::vector<Rope>& ropes, RenderWindow& window);
+    void render(std::vector<Node*> nodes, std::vector<Rope*> ropes, RenderWindow& window);
 
     void saveStruct();
     void loadStruct();

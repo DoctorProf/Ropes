@@ -11,6 +11,8 @@ class Rope
 {
 public:
 
+	Node* startNode;
+	Node* endNode;
 	int idStartNode;
 	int idEndNode;
 
@@ -27,11 +29,11 @@ public:
 	Texture ropeFont;
 	Texture steelBeamFont;
 
-	Rope(int idStartNode, int idEndNode, double distance, int type);
+	Rope(Node* startNode, Node* endNode, double distance, int type);
 
 	bool clickRope(Vector2f mouseCoor);
 
-	void draw(RenderWindow& window, std::vector<Node>& nodes);
+	void draw(RenderWindow& window);
 
 	bool operator==(const Rope& other) const;
 

@@ -3,19 +3,19 @@
 #include "Headers/Gui.h"
 #include "Headers/Simulation.h"
 
-void resetActivateNodes(std::vector<Node>& nodes) 
+void resetActivateNodes(std::vector<Node*>& nodes) 
 {
 	for (int i = 0; i < nodes.size(); i++) 
 	{
-		nodes[i].activate = false;
+		nodes[i]->activate = false;
 	}
 }
 
-void resetActivateRopes(std::vector<Rope>& ropes)
+void resetActivateRopes(std::vector<Rope*>& ropes)
 {
 	for (int i = 0; i < ropes.size(); i++)
 	{
-		ropes[i].activate = false;
+		ropes[i]->activate = false;
 	}
 }
 
@@ -67,8 +67,8 @@ int main()
 	Time accumulate = Time::Zero;
 	Time deltaTime = seconds(1.0f / 60.0f);	
 
-	std::vector<Node> nodes;
-	std::vector<Rope> ropes;
+	std::vector<Node*> nodes;
+	std::vector<Rope*> ropes;
 
 	bool pause = true;
 
@@ -126,8 +126,8 @@ int main()
 				resetActivateRopes(ropes);
 				for (int i = 0; i < ropes.size(); i++)
 				{
-					ropes[i].activate = ropes[i].clickRope(Vector2f(mouseCoor.x, mouseCoor.y));
-					if(ropes[i].activate) break;
+					ropes[i]->activate = ropes[i]->clickRope(Vector2f(mouseCoor.x, mouseCoor.y));
+					if(ropes[i]->activate) break;
 				}
 			}
 			else if ((event.type == Event::KeyPressed && event.key.code == Keyboard::Escape) || event.type == sf::Event::Closed)
@@ -139,9 +139,9 @@ int main()
 			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::Space)
 			{
 				pause = !pause;
-				for (Node& node : nodes) 
+				for (Node* node : nodes) 
 				{
-					node.angle = 0;
+					node->angle = 0;
 				}
 			}
 			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::Q)
@@ -191,16 +191,18 @@ int main()
 			}
 			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::Tab)
 			{
-				bool del = false;
-				for (int i = 0; i < ropes.size(); i++)
+				for (auto it = ropes.begin(); it != ropes.end();)
 				{
 					Vector2i mouseCoor = Mouse::getPosition(window);
-					if (ropes[i].activate)
+					if ((*it)->activate)
 					{
-						ropes.erase(ropes.begin() + i);
-						del = true;
+						delete* it;
+						it = ropes.erase(it);
 					}
-					if (del) break;
+					else
+					{
+						++it;
+					}
 				}
 			}
 			else if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left)
@@ -211,40 +213,42 @@ int main()
 					resetActivateNodes(nodes);
 					if (nodes.size() == nodes.capacity()) break;
 					Vector2f mouseCoor = window.mapPixelToCoords(Mouse::getPosition(window));
-					nodes.push_back(Node(idNode, imaginaryNode.getPosition().x, imaginaryNode.getPosition().y, radiusNode));
+					nodes.push_back(new Node(idNode, imaginaryNode.getPosition().x, imaginaryNode.getPosition().y, radiusNode));
 					idNode += 1;
 					break;
 				}
 				for (int i = 0; i < nodes.size(); i++)
 				{
-					if (nodes[i].clickNode(mouseCoor.x, mouseCoor.y))
+					if (nodes[i]->clickNode(mouseCoor.x, mouseCoor.y))
 					{
 						if (!modeMouseLeftClick && modeNode == 1)
 						{
 							resetActivateNodes(nodes);
-							nodes[i].type = nodes[i].type != 1 ? 1 : 0;
+							nodes[i]->type = nodes[i]->type != 1 ? 1 : 0;
 							break;
 						}
 						if (!modeMouseLeftClick && modeNode == 2)
 						{
 							resetActivateNodes(nodes);
-							nodes[i].type = nodes[i].type != 2 ? 2 : 0;
+							nodes[i]->type = nodes[i]->type != 2 ? 2 : 0;
 							break;
 						}
 						if (modeMouseLeftClick && modeAction == 1)
 						{
-							resetActivateNodes(nodes);
-							for (auto j = ropes.begin(); j != ropes.end();)
+							for (auto it = ropes.begin(); it != ropes.end();)
 							{
-								if (j->idStartNode == nodes[i].id || j->idEndNode == nodes[i].id)
+								Vector2i mouseCoor = Mouse::getPosition(window);
+								if ((*it)->idStartNode == nodes[i]->id || (*it)->idEndNode == nodes[i]->id)
 								{
-									j = ropes.erase(j);
+									delete* it;
+									it = ropes.erase(it);
 								}
 								else
 								{
-									++j;
+									++it;
 								}
 							}
+							delete nodes[i];
 							nodes.erase(nodes.begin() + i);
 							break;
 						}
@@ -253,13 +257,13 @@ int main()
 							resetActivateNodes(nodes);
 							isDragging = true;
 							lastMousePos = window.mapPixelToCoords(Mouse::getPosition(window));
-							moveNode = &nodes[i];
+							moveNode = nodes[i];
 							break;
 						}
 						if (!modeMouseLeftClick && selectedNode == -1)
 						{
 							resetActivateNodes(nodes);
-							nodes[i].activate = !nodes[i].activate;
+							nodes[i]->activate = !nodes[i]->activate;
 							selectedNode = i;
 							break;
 						}
@@ -270,8 +274,8 @@ int main()
 							break;
 						}
 						resetActivateNodes(nodes);
-						double distance = logic::distance(nodes[selectedNode].getPosition(), nodes[i].getPosition());
-						ropes.push_back(Rope(nodes[selectedNode].id, nodes[i].id, distance, modeRope));
+						double distance = logic::distance(nodes[selectedNode]->getPosition(), nodes[i]->getPosition());
+						ropes.push_back(new Rope(nodes[selectedNode], nodes[i], distance, modeRope));
 						selectedNode = -1;
 					}
 				}
