@@ -22,6 +22,8 @@ public:
     RectangleShape barClear;
     RectangleShape barDeleteRope;
     RectangleShape barChangeMouse;
+    RectangleShape barExportJson;
+    RectangleShape barImportJson;
 
     int modeNode;
     int modeRope;

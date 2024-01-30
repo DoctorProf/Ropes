@@ -14,6 +14,9 @@ Texture textures::cursor;
 Texture textures::deleteRope;
 Texture textures::changeMouse;
 
+Texture textures::exportJson;
+Texture textures::importJson;
+
 Texture textures::modeAccelerator;
 Texture textures::modeConnect;
 Texture textures::modeBlock;
@@ -21,6 +24,7 @@ Texture textures::modeBlock;
 Texture textures::modeAdd;
 Texture textures::modeDelete;
 Texture textures::modeMove;
+Texture textures::moveLineNode;
 
 Texture textures::modeSteelBeam;
 Texture textures::modeRope;
@@ -39,6 +43,9 @@ void textures::loadTextures()
     deleteRope.loadFromFile("Resources/deleteRope.png");
     changeMouse.loadFromFile("Resources/changeMouse.png");
 
+    exportJson.loadFromFile("Resources/exportJson.png");
+    importJson.loadFromFile("Resources/importJson.png");
+
     modeConnect.loadFromFile("Resources/modeConnect.png");
     modeBlock.loadFromFile("Resources/modeBlock.png");
     modeAccelerator.loadFromFile("Resources/modeAccelerator.png");
@@ -53,12 +60,14 @@ void textures::loadTextures()
     modeAdd.loadFromFile("Resources/modeAdd.png");
     modeDelete.loadFromFile("Resources/modeDelete.png");
     modeMove.loadFromFile("Resources/modeMove.png");
+    moveLineNode.loadFromFile("Resources/modeLineNode.png");
 
     texturesBarAction =
     {
         modeAdd,
         modeDelete,
-        modeMove
+        modeMove,
+        moveLineNode
     };
 
     modeSteelBeam.loadFromFile("Resources/modeSteelBeam.png");

@@ -16,6 +16,8 @@ namespace textures
     extern Texture cursor;
     extern Texture deleteRope;
     extern Texture changeMouse;
+    extern Texture exportJson;
+    extern Texture importJson;
 
     extern Texture modeConnect;
     extern Texture modeBlock;
@@ -26,6 +28,7 @@ namespace textures
     extern Texture modeAdd;
     extern Texture modeDelete;
     extern Texture modeMove;
+    extern Texture moveLineNode;
 
     extern std::vector<Texture> texturesBarAction;
 

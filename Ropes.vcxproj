@@ -151,6 +151,7 @@
     <Image Include="Resources\modeStart.png" />
     <Image Include="Resources\modeSteelBeam.png" />
     <Image Include="Resources\rope.jpg" />
+    <Image Include="Resources\rope.png" />
     <Image Include="Resources\steelBeam.jpg" />
   </ItemGroup>
   <ItemGroup>

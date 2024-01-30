@@ -4,7 +4,7 @@
 Simulation::Simulation(std::vector<Node*>& nodes, std::vector<Rope*>& ropes, double deltaTime, int& radius, int& idNode)
     : nodes(nodes), ropes(ropes), deltaTime(deltaTime), radius(radius), idNode(idNode)
 {
-    this->gravity = Vector2<double>(0.0, 1500.0);
+    this->gravity = Vector2<double>(0.0, 1000.0);
 }
 
 void Simulation::update()
@@ -33,7 +33,7 @@ void Simulation::applyGravity()
 
 void Simulation::applyAirFriction()
 {
-    double friction_coef = 0.4f;
+    double friction_coef = 0.6f;
     for (Node* node : nodes) {
         node->forces -= node->velocity * friction_coef;
     }

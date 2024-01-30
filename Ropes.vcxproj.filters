@@ -92,6 +92,9 @@
     <Image Include="Resources\modeMove.png">
       <Filter>Файлы ресурсов</Filter>
     </Image>
+    <Image Include="Resources\rope.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Texture.h">

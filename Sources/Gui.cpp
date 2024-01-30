@@ -6,25 +6,31 @@ Gui::Gui()
     sizeBar = { 51, 70 };
 
     barLink.setSize(sizeBar);
-    barLink.setPosition(sf::Vector2f(10, 1000));
+    barLink.setPosition(Vector2f(10, 1000));
 
     barMode.setSize(sizeBar);
-    barMode.setPosition(sf::Vector2f(71, 1000));
+    barMode.setPosition(Vector2f(71, 1000));
 
     barAction.setSize(sizeBar);
-    barAction.setPosition(sf::Vector2f(131, 1000));
+    barAction.setPosition(Vector2f(131, 1000));
 
     barStatus.setSize(sizeBar);
-    barStatus.setPosition(sf::Vector2f(191, 1000));
+    barStatus.setPosition(Vector2f(191, 1000));
 
     barClear.setSize(sizeBar);
-    barClear.setPosition(sf::Vector2f(251, 1000));
+    barClear.setPosition(Vector2f(251, 1000));
 
     barDeleteRope.setSize(sizeBar);
-    barDeleteRope.setPosition(sf::Vector2f(311, 1000));
+    barDeleteRope.setPosition(Vector2f(311, 1000));
 
     barChangeMouse.setSize(sizeBar);
-    barChangeMouse.setPosition(sf::Vector2f(371, 1000));
+    barChangeMouse.setPosition(Vector2f(371, 1000));
+
+    barExportJson.setSize(sizeBar);
+    barExportJson.setPosition(Vector2f(431, 1000));
+
+    barImportJson.setSize(sizeBar);
+    barImportJson.setPosition(Vector2f(491, 1000));
 }
 
 void Gui::update(int modeNode, int modeRope, int status, int modeAction)
@@ -35,7 +41,7 @@ void Gui::update(int modeNode, int modeRope, int status, int modeAction)
     this->status = status;
 }
 
-void Gui::draw(sf::RenderWindow& window)
+void Gui::draw(RenderWindow& window)
 {
     barMode.setTexture(&textures::texturesBarMode[modeNode]);
     barLink.setTexture(&textures::texturesBarModeRope[modeRope]);
@@ -44,6 +50,8 @@ void Gui::draw(sf::RenderWindow& window)
     barClear.setTexture(&textures::clear);
     barDeleteRope.setTexture(&textures::deleteRope);
     barChangeMouse.setTexture(&textures::changeMouse);
+    barExportJson.setTexture(&textures::exportJson);
+    barImportJson.setTexture(&textures::importJson);
 
     window.draw(barMode);
     window.draw(barLink);
@@ -52,4 +60,6 @@ void Gui::draw(sf::RenderWindow& window)
     window.draw(barClear);
     window.draw(barDeleteRope);
     window.draw(barChangeMouse);
+    window.draw(barExportJson);
+    window.draw(barImportJson);
 }

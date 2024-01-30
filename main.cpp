@@ -130,7 +130,7 @@ int main()
 					if(ropes[i]->activate) break;
 				}
 			}
-			else if ((event.type == Event::KeyPressed && event.key.code == Keyboard::Escape) || event.type == sf::Event::Closed)
+			else if ((event.type == Event::KeyPressed && event.key.code == Keyboard::Escape) || event.type == Event::Closed)
 			{
 				ropes.clear();
 				nodes.clear();
@@ -158,7 +158,7 @@ int main()
 			{
 				isDragging = false;
 				modeAction += 1;
-				if (modeAction > 2) modeAction = 0;
+				if (modeAction > 3) modeAction = 0;
 			}
 			else if (event.type == Event::KeyPressed && event.key.code == Keyboard::V)
 			{
@@ -182,9 +182,6 @@ int main()
 				pause = true;
 				modeMouseLeftClick = true;
 
-				modeNode = 0;
-				modeRope = 0;
-				modeAction = 0;
 				idNode = 0;
 
 				nodes.reserve(countNodes);
@@ -214,6 +211,15 @@ int main()
 					if (nodes.size() == nodes.capacity()) break;
 					Vector2f mouseCoor = window.mapPixelToCoords(Mouse::getPosition(window));
 					nodes.push_back(new Node(idNode, imaginaryNode.getPosition().x, imaginaryNode.getPosition().y, radiusNode));
+					idNode += 1;
+					break;
+				}
+				if(modeMouseLeftClick && modeAction == 3)
+				{
+					resetActivateNodes(nodes);
+					isDragging = true;
+					lastMousePos = window.mapPixelToCoords(Mouse::getPosition(window));
+					nodes.push_back(new Node(idNode, lastMousePos.x - radiusNode, lastMousePos.y - radiusNode, radiusNode));
 					idNode += 1;
 					break;
 				}
@@ -285,7 +291,7 @@ int main()
 				isDragging = false;
 			}
 		}
-		if (!pause && isDragging)
+		if (!pause && isDragging && modeAction == 2)
 		{
 			Vector2f currentMousePos = window.mapPixelToCoords(Mouse::getPosition(window));
 			Vector2<double> delta = Vector2<double>(currentMousePos) - moveNode->getPosition();
@@ -293,6 +299,18 @@ int main()
 
 			moveNode->forces += delta * distance;
 
+		}
+		if (modeAction == 3 && isDragging)
+		{
+			Vector2f currentMousePos = window.mapPixelToCoords(Mouse::getPosition(window));
+			if (logic::distance(Vector2<double>(currentMousePos), Vector2<double>(lastMousePos)) > 6 * radiusNode) 
+			{
+				nodes.push_back(new Node(idNode, currentMousePos.x - radiusNode, currentMousePos.y - radiusNode, radiusNode));
+				double distance = logic::distance(nodes[idNode - 1]->getPosition(), nodes[idNode]->getPosition());
+				ropes.push_back(new Rope(nodes[idNode - 1], nodes[idNode], distance, modeRope));
+				idNode += 1;
+				lastMousePos = currentMousePos;
+			}
 		}
 		accumulate += logic.restart();
 		while (accumulate >= deltaTime)
@@ -341,7 +359,7 @@ int main()
 
 			window.draw(hand);
 		}
-		if (!modeMouseLeftClick || ((modeAction == 0 || modeAction == 1) && modeMouseLeftClick))
+		if (!modeMouseLeftClick || ((modeAction == 0 || modeAction == 1 || modeAction == 3) && modeMouseLeftClick))
 		{
 			cursor.setSize(Vector2f(2 * radiusNode, 2 * radiusNode));
 			cursor.setTexture(&textures::cursor);
